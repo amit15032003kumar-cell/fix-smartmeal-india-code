@@ -1,0 +1,3682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>SmartMeal India 🍽️ — Premium Diet, Exercise, Reminders & Weekly Planner</title>
+  <meta name="description" content="Your personalized Indian diet planner with premium interface, meal tracking, exercise logging, water intake, and smart reminders.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#F73B60', /* Cult Pink */
+            'primary-dark': '#D42B50',
+            accent: '#00D1FF', /* Cyan */
+            'accent-dark': '#00A6CC',
+            blue: {
+              DEFAULT: '#3b82f6',
+              500: '#3b82f6',
+            },
+            pink: {
+              DEFAULT: '#ec4899',
+              500: '#ec4899',
+            },
+            'orange-light': '#f5f5f5',
+            'orange-medium': '#e5e5e5',
+            'orange-border': '#d4d4d4',
+            'dark-bg': '#000000',
+            'dark-card': '#141414',
+            'dark-border': '#282828',
+            'dark-surface': '#0a0a0a',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React & Babel CDNs -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    html { 
+      scroll-behavior: smooth;
+      font-family: 'Outfit', sans-serif;
+    }
+    
+    body {
+      background-color: #f5f5f5;
+      color: #111111;
+      font-weight: 500;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    html.dark body {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { 
+      background: #F73B60;
+      border-radius: 10px; 
+    }
+
+    /* Sharp, modern cards */
+    .glass-card {
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    html.dark .glass-card {
+      background: #141414;
+      border: 1px solid #282828;
+      box-shadow: none;
+    }
+    html.dark .glass-card:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      border-color: rgba(247, 59, 96, 0.3); /* Subtle pink glow on hover */
+    }
+
+    /* Interactive Elements */
+    .tab-active {
+      background: #F73B60;
+      color: white !important;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(247, 59, 96, 0.4);
+      transform: scale(1.05);
+      border-color: transparent !important;
+    }
+
+    .btn-primary {
+      background: #F73B60;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(247, 59, 96, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      background: #D42B50;
+      box-shadow: 0 6px 20px rgba(247, 59, 96, 0.5);
+    }
+
+    .btn-accent {
+      background: #00D1FF;
+      color: #000;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-accent:hover {
+      transform: translateY(-2px);
+      background: #00A6CC;
+      box-shadow: 0 6px 20px rgba(0, 209, 255, 0.3);
+    }
+
+    .btn-danger {
+      background: #f43f5e;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-danger:hover { 
+      transform: translateY(-2px);
+      background: #e11d48;
+    }
+
+    /* Inputs */
+    .input-field {
+      width: 100%;
+      padding: 0.75rem 1.25rem;
+      border: 2px solid #e5e5e5;
+      border-radius: 0.5rem;
+      background: #fafafa;
+      color: #111111;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+    .input-field:focus {
+      border-color: #F73B60;
+      background: #ffffff;
+    }
+    
+    html.dark .input-field {
+      background: #0a0a0a;
+      border-color: #282828;
+      color: #ffffff;
+    }
+    html.dark .input-field:focus {
+      border-color: #F73B60;
+      background: #000000;
+    }
+
+    /* Micro-animations */
+    .meal-card {
+      transition: all 0.2s ease;
+      border-left: 4px solid #F73B60;
+    }
+    .meal-card:hover {
+      transform: translateX(4px);
+    }
+
+    .water-drop {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .water-drop:hover {
+      transform: scale(1.1);
+    }
+    .water-drop:active {
+      transform: scale(0.9);
+    }
+    .water-drop.filled {
+      filter: drop-shadow(0 0 5px rgba(0, 209, 255, 0.6));
+    }
+    .water-drop.empty {
+      filter: grayscale(1) opacity(0.3);
+    }
+
+    /* Keyframe Animations */
+    .fade-in {
+      animation: slideFadeIn 0.4s ease-out both;
+    }
+    
+    @keyframes slideFadeIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    .pulse-glow {
+      animation: pulse-glow 2s infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 5px rgba(247, 59, 96, 0.2); }
+      50% { box-shadow: 0 0 15px rgba(247, 59, 96, 0.6); }
+    }
+    
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+
+    /* Staggered animations for children */
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useCallback, useRef } = React;
+
+    // ==========================================
+    // UTILITY FUNCTIONS & STATIC DATA
+    // ==========================================
+    const LIFESTYLE_INFO = {
+      gaming: {
+        label: "Gaming / Sedentary",
+        icon: "🎮",
+        emoji: "🖥️",
+        description: "Mostly sitting — gaming, desk work, minimal movement",
+        activityFactor: 1.2,
+      },
+      normal: {
+        label: "Normal / Moderate",
+        icon: "🚶",
+        emoji: "🏠",
+        description: "Regular daily activities — walking, household chores, light work",
+        activityFactor: 1.55,
+      },
+      active: {
+        label: "Active / Sporty",
+        icon: "🏃",
+        emoji: "💪",
+        description: "Regular exercise 4-5 days/week, active job or sports",
+        activityFactor: 1.725,
+      },
+      athlete: {
+        label: "Athlete / Intense",
+        icon: "🏋️",
+        emoji: "🔥",
+        description: "Daily intense training, competitive sports, heavy physical labor",
+        activityFactor: 1.9,
+      },
+    };
+
+    const GOAL_INFO = {
+      lose: { label: "Lose Weight", icon: "📉", calorieAdjust: -500 },
+      maintain: { label: "Maintain Weight", icon: "⚖️", calorieAdjust: 0 },
+      gain: { label: "Gain Weight / Muscle", icon: "📈", calorieAdjust: 400 },
+    };
+
+    function calcBMI(weightKg, heightCm) {
+      if (heightCm <= 0) return 0;
+      const heightM = heightCm / 100;
+      return parseFloat((weightKg / (heightM * heightM)).toFixed(1));
+    }
+
+    function bmiCategory(bmi) {
+      if (bmi < 18.5) return { label: "Underweight", color: "text-blue-500", emoji: "🔵" };
+      if (bmi < 25) return { label: "Normal", color: "text-green-500", emoji: "🟢" };
+      if (bmi < 30) return { label: "Overweight", color: "text-yellow-500", emoji: "🟡" };
+      return { label: "Obese", color: "text-red-500", emoji: "🔴" };
+    }
+
+    function calcBMR(weightKg, heightCm, age, gender) {
+      if (gender === "female") {
+        return 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
+      }
+      return 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
+    }
+
+    function calcDailyCalories(profile) {
+      const bmr = calcBMR(profile.weightKg, profile.heightCm, profile.age, profile.gender);
+      const lifestyle = LIFESTYLE_INFO[profile.lifestyle] || LIFESTYLE_INFO.normal;
+      const goalAdj = GOAL_INFO[profile.goal] || GOAL_INFO.maintain;
+      return Math.round(bmr * lifestyle.activityFactor + goalAdj.calorieAdjust);
+    }
+
+    function calcMacroTargets(totalCalories, lifestyle, goal) {
+      let proteinPct = 0.25;
+      let fatPct = 0.25;
+      if (lifestyle === "active" || lifestyle === "athlete") proteinPct = 0.3;
+      if (goal === "gain") proteinPct = 0.3;
+      if (goal === "lose") { proteinPct = 0.3; fatPct = 0.25; }
+      const carbPct = 1 - proteinPct - fatPct;
+
+      return {
+        protein: Math.round((totalCalories * proteinPct) / 4),
+        carbs: Math.round((totalCalories * carbPct) / 4),
+        fat: Math.round((totalCalories * fatPct) / 9),
+      };
+    }
+
+    // Indian meal database
+    const BREAKFAST_OPTIONS = [
+      { name: "Poha", calories: 250, protein: 5, carbs: 40, fat: 8, isVeg: true, tags: ["light", "quick"] },
+      { name: "Upma", calories: 220, protein: 5, carbs: 38, fat: 6, isVeg: true, tags: ["light", "quick"] },
+      { name: "Idli (3 pcs) + Sambar", calories: 200, protein: 6, carbs: 35, fat: 4, isVeg: true, tags: ["light", "protein"] },
+      { name: "Dosa + Chutney", calories: 230, protein: 5, carbs: 40, fat: 6, isVeg: true, tags: ["light"] },
+      { name: "Oats Porridge + Fruits", calories: 200, protein: 7, carbs: 35, fat: 4, isVeg: true, tags: ["light", "healthy"] },
+      { name: "Moong Dal Chilla (2 pcs)", calories: 180, protein: 10, carbs: 22, fat: 5, isVeg: true, tags: ["light", "protein-rich"] },
+      { name: "Fruit Bowl + Yogurt", calories: 180, protein: 6, carbs: 30, fat: 4, isVeg: true, tags: ["light", "healthy"] },
+      { name: "Paratha (2) + Curd", calories: 350, protein: 9, carbs: 45, fat: 14, isVeg: true, tags: ["medium", "filling"] },
+      { name: "Masala Dosa + Sambar", calories: 320, protein: 8, carbs: 48, fat: 10, isVeg: true, tags: ["medium"] },
+      { name: "Egg Bhurji (2 eggs) + Toast", calories: 300, protein: 16, carbs: 25, fat: 14, isVeg: false, tags: ["medium", "protein-rich"] },
+      { name: "Besan Chilla + Chutney", calories: 280, protein: 12, carbs: 30, fat: 10, isVeg: true, tags: ["medium", "protein-rich"] },
+      { name: "Paneer Paratha + Curd", calories: 380, protein: 14, carbs: 40, fat: 18, isVeg: true, tags: ["medium", "protein-rich"] },
+      { name: "Vegetable Sandwich + Milk", calories: 320, protein: 10, carbs: 42, fat: 12, isVeg: true, tags: ["medium", "quick"] },
+      { name: "Chole Bhature", calories: 500, protein: 15, carbs: 60, fat: 20, isVeg: true, tags: ["heavy", "weekend"] },
+      { name: "Aloo Paratha (2) + Butter + Curd", calories: 480, protein: 10, carbs: 55, fat: 24, isVeg: true, tags: ["heavy"] },
+    ];
+
+    const LUNCH_OPTIONS = [
+      { name: "Dal + Rice (small)", calories: 350, protein: 12, carbs: 55, fat: 6, isVeg: true, tags: ["light", "balanced"] },
+      { name: "Roti (2) + Sabzi + Dal", calories: 380, protein: 14, carbs: 50, fat: 10, isVeg: true, tags: ["light", "balanced"] },
+      { name: "Khichdi + Curd", calories: 320, protein: 10, carbs: 48, fat: 8, isVeg: true, tags: ["light", "easy-digest"] },
+      { name: "Veg Pulao + Raita", calories: 380, protein: 8, carbs: 58, fat: 12, isVeg: true, tags: ["light"] },
+      { name: "Grilled Chicken Salad", calories: 350, protein: 35, carbs: 15, fat: 16, isVeg: false, tags: ["light", "protein-rich", "low-carb"] },
+      { name: "Rajma Rice", calories: 450, protein: 16, carbs: 68, fat: 8, isVeg: true, tags: ["medium", "protein-rich"] },
+      { name: "Chole + Rice", calories: 480, protein: 15, carbs: 70, fat: 12, isVeg: true, tags: ["medium", "protein-rich"] },
+      { name: "Kadhi Chawal", calories: 420, protein: 10, carbs: 62, fat: 14, isVeg: true, tags: ["medium"] },
+      { name: "Roti (3) + Paneer Sabzi + Dal", calories: 520, protein: 22, carbs: 55, fat: 22, isVeg: true, tags: ["medium", "protein-rich"] },
+      { name: "Fish Curry + Rice", calories: 450, protein: 30, carbs: 50, fat: 14, isVeg: false, tags: ["medium", "protein-rich"] },
+      { name: "Chicken Curry + Roti (2)", calories: 480, protein: 32, carbs: 42, fat: 18, isVeg: false, tags: ["medium", "protein-rich"] },
+      { name: "Thali (Rice + 2 Sabzi + Dal + Roti + Salad)", calories: 650, protein: 20, carbs: 85, fat: 22, isVeg: true, tags: ["heavy", "complete"] },
+      { name: "Chicken Biryani", calories: 600, protein: 28, carbs: 70, fat: 24, isVeg: false, tags: ["heavy", "protein-rich"] },
+    ];
+
+    const DINNER_OPTIONS = [
+      { name: "Roti (2) + Light Sabzi", calories: 280, protein: 8, carbs: 42, fat: 8, isVeg: true, tags: ["light", "easy-digest"] },
+      { name: "Moong Dal + Roti (1)", calories: 250, protein: 12, carbs: 35, fat: 6, isVeg: true, tags: ["light", "protein-rich"] },
+      { name: "Vegetable Soup + Bread", calories: 200, protein: 6, carbs: 30, fat: 6, isVeg: true, tags: ["light", "easy-digest"] },
+      { name: "Khichdi", calories: 280, protein: 10, carbs: 45, fat: 6, isVeg: true, tags: ["light", "easy-digest"] },
+      { name: "Grilled Fish + Salad", calories: 300, protein: 32, carbs: 10, fat: 14, isVeg: false, tags: ["light", "protein-rich", "low-carb"] },
+      { name: "Roti (2) + Paneer Bhurji", calories: 400, protein: 18, carbs: 38, fat: 18, isVeg: true, tags: ["medium", "protein-rich"] },
+      { name: "Dal Tadka + Rice (small)", calories: 380, protein: 14, carbs: 55, fat: 10, isVeg: true, tags: ["medium"] },
+      { name: "Roti (2) + Mixed Veg + Dal", calories: 420, protein: 15, carbs: 55, fat: 14, isVeg: true, tags: ["medium", "balanced"] },
+      { name: "Egg Omelette (2) + Roti (2)", calories: 380, protein: 18, carbs: 35, fat: 18, isVeg: false, tags: ["medium", "protein-rich"] },
+      { name: "Paneer Butter Masala + Naan", calories: 520, protein: 20, carbs: 50, fat: 26, isVeg: true, tags: ["heavy", "rich"] },
+    ];
+
+    const SNACK_OPTIONS = [
+      { name: "Green Tea", calories: 5, protein: 0, carbs: 1, fat: 0, isVeg: true, tags: ["light", "healthy"] },
+      { name: "Buttermilk (Chaas)", calories: 60, protein: 3, carbs: 5, fat: 2, isVeg: true, tags: ["light", "healthy", "digestive"] },
+      { name: "Coconut Water", calories: 45, protein: 1, carbs: 9, fat: 0, isVeg: true, tags: ["light", "hydrating"] },
+      { name: "Makhana (Fox Nuts) 1 cup", calories: 120, protein: 4, carbs: 20, fat: 2, isVeg: true, tags: ["light", "healthy", "gaming-friendly"] },
+      { name: "Roasted Chana (1/2 cup)", calories: 130, protein: 8, carbs: 18, fat: 3, isVeg: true, tags: ["light", "protein-rich"] },
+      { name: "Apple (1 medium)", calories: 95, protein: 0, carbs: 25, fat: 0, isVeg: true, tags: ["light", "healthy"] },
+      { name: "Banana (1 medium)", calories: 105, protein: 1, carbs: 27, fat: 0, isVeg: true, tags: ["light", "energy"] },
+      { name: "Sprouts Chaat", calories: 120, protein: 8, carbs: 18, fat: 2, isVeg: true, tags: ["light", "protein-rich"] },
+      { name: "Fruit Chaat", calories: 150, protein: 2, carbs: 35, fat: 1, isVeg: true, tags: ["medium", "healthy"] },
+      { name: "Dhokla (3 pcs)", calories: 180, protein: 6, carbs: 28, fat: 4, isVeg: true, tags: ["medium"] },
+      { name: "Boiled Eggs (2)", calories: 140, protein: 12, carbs: 1, fat: 10, isVeg: false, tags: ["medium", "protein-rich"] },
+    ];
+
+    const EXERCISE_OPTIONS = [
+      { name: "Desk Stretches", category: "yoga", durationMinutes: 10, caloriesBurned: 25, intensity: "low", suitableFor: ["gaming", "normal"] },
+      { name: "Eye Exercises", category: "yoga", durationMinutes: 5, caloriesBurned: 10, intensity: "low", suitableFor: ["gaming"] },
+      { name: "Neck & Shoulder Rolls", category: "yoga", durationMinutes: 5, caloriesBurned: 15, intensity: "low", suitableFor: ["gaming", "normal"] },
+      { name: "Chair Squats", category: "strength", durationMinutes: 10, caloriesBurned: 50, intensity: "low", suitableFor: ["gaming", "normal"] },
+      { name: "Walking (Slow)", category: "cardio", durationMinutes: 20, caloriesBurned: 70, intensity: "low", suitableFor: ["gaming", "normal"] },
+      { name: "Morning Walk", category: "cardio", durationMinutes: 30, caloriesBurned: 120, intensity: "low", suitableFor: ["gaming", "normal", "active"] },
+      { name: "Surya Namaskar (6 rounds)", category: "yoga", durationMinutes: 15, caloriesBurned: 100, intensity: "medium", suitableFor: ["normal", "active"] },
+      { name: "Pranayama", category: "yoga", durationMinutes: 15, caloriesBurned: 40, intensity: "low", suitableFor: ["gaming", "normal", "active", "athlete"] },
+      { name: "Cycling (Leisure)", category: "cardio", durationMinutes: 30, caloriesBurned: 180, intensity: "medium", suitableFor: ["normal", "active"] },
+      { name: "Badminton", category: "sports", durationMinutes: 30, caloriesBurned: 200, intensity: "medium", suitableFor: ["normal", "active"] },
+      { name: "Push-ups (3 sets)", category: "strength", durationMinutes: 10, caloriesBurned: 60, intensity: "medium", suitableFor: ["normal", "active", "athlete"] },
+      { name: "Plank (3 sets)", category: "strength", durationMinutes: 10, caloriesBurned: 50, intensity: "medium", suitableFor: ["normal", "active", "athlete"] },
+      { name: "Running", category: "cardio", durationMinutes: 30, caloriesBurned: 300, intensity: "high", suitableFor: ["active", "athlete"] },
+      { name: "HIIT Workout", category: "cardio", durationMinutes: 20, caloriesBurned: 250, intensity: "high", suitableFor: ["active", "athlete"] },
+      { name: "Jump Rope", category: "cardio", durationMinutes: 15, caloriesBurned: 180, intensity: "high", suitableFor: ["active", "athlete"] },
+      { name: "Squats (4 sets)", category: "strength", durationMinutes: 15, caloriesBurned: 100, intensity: "medium", suitableFor: ["active", "athlete"] },
+    ];
+
+    const POPULAR_MEALS = [
+      { name: "Poha", calories: 250, protein: 5, carbs: 40, fat: 8, isVeg: true },
+      { name: "Idli Sambar", calories: 200, protein: 6, carbs: 35, fat: 4, isVeg: true },
+      { name: "Paratha with Curd", calories: 350, protein: 9, carbs: 45, fat: 14, isVeg: true },
+      { name: "Upma", calories: 220, protein: 5, carbs: 38, fat: 6, isVeg: true },
+      { name: "Dal Chawal", calories: 400, protein: 15, carbs: 60, fat: 8, isVeg: true },
+      { name: "Rajma Rice", calories: 420, protein: 14, carbs: 65, fat: 7, isVeg: true },
+      { name: "Paneer Butter Masala", calories: 380, protein: 18, carbs: 20, fat: 24, isVeg: true },
+      { name: "Chicken Curry + Roti", calories: 450, protein: 30, carbs: 40, fat: 16, isVeg: false },
+      { name: "Dosa with Chutney", calories: 230, protein: 5, carbs: 40, fat: 6, isVeg: true },
+      { name: "Buttermilk (Chaas)", calories: 60, protein: 3, carbs: 5, fat: 2, isVeg: true },
+      { name: "Makhana (Fox Nuts)", calories: 120, protein: 4, carbs: 20, fat: 2, isVeg: true },
+    ];
+
+    const POPULAR_EXERCISES = [
+      { name: "Morning Walk", category: "cardio", durationMinutes: 30, caloriesBurned: 120 },
+      { name: "Running", category: "cardio", durationMinutes: 30, caloriesBurned: 300 },
+      { name: "Surya Namaskar", category: "yoga", durationMinutes: 20, caloriesBurned: 140 },
+      { name: "Pranayama", category: "yoga", durationMinutes: 15, caloriesBurned: 50 },
+      { name: "Push-ups", category: "strength", durationMinutes: 15, caloriesBurned: 100 },
+      { name: "Squats", category: "strength", durationMinutes: 15, caloriesBurned: 120 },
+      { name: "Cycling", category: "cardio", durationMinutes: 30, caloriesBurned: 250 },
+      { name: "Desk Stretches", category: "yoga", durationMinutes: 10, caloriesBurned: 25 },
+    ];
+
+    const LIFESTYLE_RECS = {
+      gaming: ["Desk Stretches", "Morning Walk", "Pranayama", "Chair Squats", "Plank"],
+      normal: ["Morning Walk", "Surya Namaskar", "Cycling", "Push-ups", "Badminton"],
+      active: ["Running", "Squats", "Jump Rope", "Surya Namaskar"],
+      athlete: ["Running", "Push-ups", "Squats", "Jump Rope", "Cycling"],
+    };
+
+    const EXERCISE_TARGETS = {
+      gaming: 30,
+      normal: 45,
+      active: 60,
+      athlete: 90,
+    };
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function filterMeals(meals, maxCal, minCal = 0, preferVeg = true) {
+      let filtered = meals.filter(m => m.calories >= minCal && m.calories <= maxCal);
+      if (preferVeg) {
+        const vegOnly = filtered.filter(m => m.isVeg);
+        if (vegOnly.length >= 3) filtered = vegOnly;
+      }
+      return filtered.length > 0 ? filtered : meals.slice(0, 5);
+    }
+
+    function generateWeeklyPlan(dailyCalorieTarget, lifestyle, goal, preferVeg = true) {
+      const days = [];
+      const breakfastCal = Math.round(dailyCalorieTarget * 0.25);
+      const lunchCal = Math.round(dailyCalorieTarget * 0.35);
+      const dinnerCal = Math.round(dailyCalorieTarget * 0.25);
+      const snackCal = Math.round(dailyCalorieTarget * 0.15);
+      
+      let dinnerMax = dinnerCal + 100;
+      let snackMax = snackCal + 50;
+      
+      if (goal === "lose") {
+        dinnerMax = dinnerCal;
+      } else if (goal === "gain") {
+        dinnerMax = dinnerCal + 150;
+        snackMax = snackCal + 100;
+      }
+      
+      if (lifestyle === "gaming") {
+        dinnerMax = Math.min(dinnerMax, 350);
+      }
+      
+      const exerciseTargets = {
+        gaming: { min: 30, sessions: 2 },
+        normal: { min: 45, sessions: 2 },
+        active: { min: 60, sessions: 3 },
+        athlete: { min: 90, sessions: 4 },
+      };
+      const exTarget = exerciseTargets[lifestyle] || exerciseTargets.normal;
+      const suitableExercises = EXERCISE_OPTIONS.filter(e => e.suitableFor.includes(lifestyle));
+      
+      const DAYS_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+      for (let i = 0; i < 7; i++) {
+        const breakfastOptions = filterMeals(BREAKFAST_OPTIONS, breakfastCal + 80, breakfastCal - 100, preferVeg);
+        const lunchOptions = filterMeals(LUNCH_OPTIONS, lunchCal + 100, lunchCal - 100, preferVeg);
+        const dinnerOptions = filterMeals(DINNER_OPTIONS, dinnerMax, dinnerMax - 150, preferVeg);
+        
+        const breakfast = pickRandom(breakfastOptions);
+        const lunch = pickRandom(lunchOptions);
+        const dinner = pickRandom(dinnerOptions);
+        
+        const mealsCal = breakfast.calories + lunch.calories + dinner.calories;
+        const remainingCal = dailyCalorieTarget - mealsCal;
+        
+        const snacks = [];
+        let snackCalUsed = 0;
+        const snackOptions = filterMeals(SNACK_OPTIONS, Math.min(remainingCal, snackMax), 30, preferVeg);
+        
+        if (remainingCal > 50 && snackOptions.length > 0) {
+          const snack1 = pickRandom(snackOptions);
+          snacks.push(snack1);
+          snackCalUsed += snack1.calories;
+          
+          if (remainingCal - snackCalUsed > 80) {
+            const snack2Options = snackOptions.filter(s => s.name !== snack1.name && s.calories <= remainingCal - snackCalUsed);
+            if (snack2Options.length > 0) {
+              snacks.push(pickRandom(snack2Options));
+            }
+          }
+        }
+        
+        const dayExercises = [];
+        let exMinutes = 0;
+        const usedExNames = [];
+        const isWeekend = i === 0 || i === 6;
+        
+        for (let j = 0; j < exTarget.sessions && exMinutes < exTarget.min; j++) {
+          const available = suitableExercises.filter(e => 
+            !usedExNames.includes(e.name) && 
+            (isWeekend ? true : e.durationMinutes <= 30)
+          );
+          if (available.length === 0) break;
+          
+          const ex = pickRandom(available);
+          dayExercises.push(ex);
+          exMinutes += ex.durationMinutes;
+          usedExNames.push(ex.name);
+        }
+        
+        const allMeals = [breakfast, lunch, dinner, ...snacks];
+        const totalCalories = allMeals.reduce((s, m) => s + m.calories, 0);
+        const totalProtein = allMeals.reduce((s, m) => s + m.protein, 0);
+        const totalCarbs = allMeals.reduce((s, m) => s + m.carbs, 0);
+        const totalFat = allMeals.reduce((s, m) => s + m.fat, 0);
+        const caloriesBurned = dayExercises.reduce((s, e) => s + e.caloriesBurned, 0);
+        
+        days.push({
+          dayOfWeek: i,
+          dayName: DAYS_NAMES[i],
+          meals: { breakfast, lunch, dinner, snacks },
+          exercises: dayExercises,
+          totalCalories,
+          totalProtein,
+          totalCarbs,
+          totalFat,
+          exerciseMinutes: exMinutes,
+          caloriesBurned,
+        });
+      }
+      
+      const totalWeekCalories = days.reduce((s, d) => s + d.totalCalories, 0);
+      const totalExerciseMinutes = days.reduce((s, d) => s + d.exerciseMinutes, 0);
+      
+      return {
+        days,
+        totalWeekCalories,
+        avgDailyCalories: Math.round(totalWeekCalories / 7),
+        totalExerciseMinutes,
+      };
+    }
+
+    // ==========================================
+    // COMPONENTS
+    // ==========================================
+
+    function Header({ dark, setDark, activeTab, setActiveTab }) {
+      const headerTabs = [
+        { key: "profile", label: "Profile", icon: "👤" },
+        { key: "activity", label: "Activity", icon: "📱" },
+        { key: "myplan", label: "My Plan", icon: "✨" },
+        { key: "diet", label: "Diet", icon: "🥗" },
+        { key: "exercise", label: "Exercise", icon: "🏋️" },
+        { key: "reminders", label: "Reminders", icon: "⏰" },
+        { key: "planner", label: "Week", icon: "📅" },
+      ];
+
+      return (
+        <header className="sticky top-0 z-30 -mx-4 mb-4 border-b border-white/20 px-4 pb-3 pt-4 backdrop-blur-xl">
+          <div className="relative text-center">
+            <h1 className="text-2xl md:text-4xl font-black text-primary uppercase tracking-wider">
+              🍽️ SmartMeal India
+            </h1>
+            <p className={`mt-1 text-xs md:text-sm font-bold uppercase tracking-widest ${dark ? "text-accent" : "text-gray-500"}`}>
+              Diet · Activity · Health · Reminders · Planner
+            </p>
+
+            <div className="absolute right-0 top-0">
+              <button
+                onClick={() => setDark(!dark)}
+                className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
+                  dark ? "bg-indigo-600" : "bg-orange-300"
+                }`}
+                aria-label="Toggle dark mode"
+              >
+                <span
+                  className={`absolute top-0.5 w-6 h-6 rounded-full transition-all duration-300 flex items-center justify-center text-sm ${
+                    dark ? "left-7 bg-indigo-900" : "left-0.5 bg-white"
+                  }`}
+                >
+                  {dark ? "🌙" : "☀️"}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <nav className="mt-4 flex gap-1 overflow-x-auto pb-1" aria-label="Main app sections">
+            {headerTabs.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex min-w-[66px] flex-1 flex-col items-center gap-0.5 rounded-xl px-2 py-2 text-[10px] font-bold transition-all duration-300 md:min-w-[86px] md:text-xs ${
+                  activeTab === tab.key
+                    ? "tab-active scale-[1.02]"
+                    : dark
+                    ? "bg-[#141414] text-gray-400 hover:bg-[#282828]"
+                    : "bg-white text-gray-600 shadow-sm hover:bg-gray-100"
+                }`}
+              >
+                <span className="text-base md:text-lg">{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+        </header>
+      );
+    }
+
+    function ProfileCard({ profile, dark, onEdit, todayCalories, todayBurned, onOpenProfile }) {
+      const bmi = calcBMI(profile.weightKg, profile.heightCm);
+      const bmiCat = bmiCategory(bmi);
+      const dailyTarget = calcDailyCalories(profile);
+      const macros = calcMacroTargets(dailyTarget, profile.lifestyle, profile.goal);
+      const calorieProgress = Math.min((todayCalories / dailyTarget) * 100, 100);
+      const remaining = dailyTarget - todayCalories;
+      const lifestyleInfo = LIFESTYLE_INFO[profile.lifestyle] || LIFESTYLE_INFO.normal;
+      const goalInfo = GOAL_INFO[profile.goal] || GOAL_INFO.maintain;
+
+      return (
+        <div className="glass-card p-4 mt-4 fade-in">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <button onClick={onOpenProfile} className="relative group flex-shrink-0">
+                <div className={`w-12 h-12 rounded-full overflow-hidden border-2 transition-all ${
+                  dark ? "border-primary/50" : "border-primary/30"
+                } group-hover:border-primary group-hover:shadow-md group-hover:shadow-primary/20`}>
+                  {profile.profilePicture ? (
+                    <img
+                      src={profile.profilePicture}
+                      alt={profile.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className={`w-full h-full flex items-center justify-center text-xl ${
+                      dark ? "bg-dark-border" : "bg-gradient-to-br from-orange-100 to-orange-200"
+                    }`}>
+                      {profile.gender === "female" ? "👩" : profile.gender === "other" ? "🧑" : "👨"}
+                    </div>
+                  )}
+                </div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-accent rounded-full border-2 border-white flex items-center justify-center">
+                  <span className="text-[7px] text-white">✓</span>
+                </div>
+              </button>
+              <div className="min-w-0">
+                <p className="font-bold text-sm truncate">
+                  {profile.name || "User"}
+                  <span className="ml-2 text-xs font-normal opacity-50">
+                    {profile.age}y · {profile.weightKg}kg · {profile.heightCm}cm
+                  </span>
+                </p>
+                <p className="text-xs opacity-60 flex items-center gap-1.5">
+                  {lifestyleInfo.icon} {lifestyleInfo.label}
+                  <span className="mx-1">·</span>
+                  {goalInfo.icon} {goalInfo.label}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={onEdit}
+              className={`text-xs px-3 py-1.5 rounded-lg font-semibold transition-all ${
+                dark ? "bg-[#282828] text-gray-300 hover:bg-primary/30" : "bg-orange-100 text-primary hover:bg-orange-200"
+              }`}
+            >
+              ✏️ Edit
+            </button>
+          </div>
+
+          <div className="grid grid-cols-4 gap-2 mb-3">
+            <div className={`rounded-lg p-2 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+              <p className={`text-lg font-bold ${bmiCat.color}`}>{bmi}</p>
+              <p className="text-[10px] opacity-60">BMI</p>
+            </div>
+            <div className={`rounded-lg p-2 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+              <p className="text-lg font-bold text-primary">{dailyTarget}</p>
+              <p className="text-[10px] opacity-60">Target kcal</p>
+            </div>
+            <div className={`rounded-lg p-2 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+              <p className="text-lg font-bold text-accent">{todayCalories}</p>
+              <p className="text-[10px] opacity-60">Eaten</p>
+            </div>
+            <div className={`rounded-lg p-2 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+              <p className={`text-lg font-bold ${remaining < 0 ? "text-red-500" : "text-blue"}`}>{remaining}</p>
+              <p className="text-[10px] opacity-60">Remaining</p>
+            </div>
+          </div>
+
+          <div className="mb-2">
+            <div className="flex justify-between text-[10px] opacity-50 mb-1">
+              <span>0 kcal</span>
+              <span>{dailyTarget} kcal target</span>
+            </div>
+            <div className={`w-full h-3 rounded-full overflow-hidden ${dark ? "bg-[#282828]" : "bg-gray-100"}`}>
+              <div
+                className={`h-full rounded-full transition-all duration-700 ${
+                  calorieProgress > 100
+                    ? "bg-gradient-to-r from-red-400 to-red-500"
+                    : calorieProgress > 80
+                    ? "bg-gradient-to-r from-yellow-400 to-orange-400"
+                    : "bg-gradient-to-r from-green-400 to-accent"
+                }`}
+                style={{ width: `${calorieProgress}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 mt-3">
+            <div className="text-center">
+              <p className="text-[10px] opacity-50 uppercase">Protein target</p>
+              <p className="text-xs font-bold text-green-500">{macros.protein}g</p>
+            </div>
+            <div className="text-center">
+              <p className="text-[10px] opacity-50 uppercase">Carbs target</p>
+              <p className="text-xs font-bold text-blue">{macros.carbs}g</p>
+            </div>
+            <div className="text-center">
+              <p className="text-[10px] opacity-50 uppercase">Fat target</p>
+              <p className="text-xs font-bold text-pink">{macros.fat}g</p>
+            </div>
+          </div>
+
+          {profile.lifestyle === "gaming" && (
+            <div className={`mt-3 rounded-lg px-3 py-2 text-xs flex items-center gap-2 ${
+              dark ? "bg-purple-900/30 text-purple-300" : "bg-purple-50 text-purple-700"
+            }`}>
+              <span>🎮</span> <span>Remember to stretch! Take a 5-min break every hour.</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function WaterTracker({ dark, water, onWaterUpdate }) {
+      const TARGET = 8;
+      const today = new Date().toISOString().split("T")[0];
+      const glasses = water[today] || 0;
+
+      const addGlass = () => {
+        onWaterUpdate(today, glasses + 1);
+      };
+
+      const removeGlass = () => {
+        if (glasses <= 0) return;
+        onWaterUpdate(today, glasses - 1);
+      };
+
+      const pct = Math.min((glasses / TARGET) * 100, 100);
+
+      return (
+        <div className="glass-card p-4 mt-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-2">
+            <h3 className="font-semibold text-sm flex items-center gap-2">
+              💧 Water Tracker
+              <span className="text-xs opacity-60">({glasses}/{TARGET} glasses)</span>
+            </h3>
+            <div className="flex gap-2">
+              <button
+                onClick={removeGlass}
+                disabled={glasses <= 0}
+                className={`text-xs py-1.5 px-3 rounded-lg font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                  dark ? "bg-[#282828] text-gray-200 hover:bg-red-900/40" : "bg-red-50 text-red-600 hover:bg-red-100"
+                }`}
+              >
+                − Remove Glass
+              </button>
+              <button
+                onClick={addGlass}
+                className="btn-accent text-xs py-1.5 px-3"
+              >
+                + Add Glass
+              </button>
+            </div>
+          </div>
+          <div className={`w-full h-3 rounded-full overflow-hidden ${dark ? "bg-[#282828]" : "bg-orange-100"}`}>
+            <div
+              className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-blue to-accent"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <div className="flex mt-2 gap-1 flex-wrap">
+            {Array.from({ length: TARGET }).map((_, i) => (
+              <span
+                key={i}
+                className={`text-xl water-drop ${i < glasses ? "filled" : "empty"}`}
+                onClick={() => onWaterUpdate(today, i + 1)}
+              >
+                💧
+              </span>
+            ))}
+            {glasses > TARGET && (
+              <span className="text-xs self-center ml-1 font-semibold text-blue">
+                +{glasses - TARGET} extra
+              </span>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================
+    // STAGE 1: PROFILE SETUP
+    // ==========================
+    function ProfileSetup({ dark, onComplete, existingProfile }) {
+      const [step, setStep] = useState(1);
+      const [picturePreview, setPicturePreview] = useState(existingProfile?.profilePicture || "");
+      const fileInputRef = useRef(null);
+      const [form, setForm] = useState({
+        name: existingProfile?.name || "",
+        age: existingProfile?.age || 25,
+        gender: existingProfile?.gender || "male",
+        weightKg: existingProfile?.weightKg || 70,
+        heightCm: existingProfile?.heightCm || 170,
+        lifestyle: existingProfile?.lifestyle || "normal",
+        goal: existingProfile?.goal || "maintain",
+      });
+
+      const bmi = calcBMI(form.weightKg, form.heightCm);
+      const bmiCat = bmiCategory(bmi);
+      const dailyCal = calcDailyCalories({ ...form });
+      const macros = calcMacroTargets(dailyCal, form.lifestyle, form.goal);
+
+      const handleFileChange = (e) => {
+        const file = e.target.files?.[0];
+        if (!file || !file.type.startsWith("image/")) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          setPicturePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      };
+
+      const saveProfile = () => {
+        onComplete({
+          ...form,
+          profilePicture: picturePreview || null,
+        });
+      };
+
+      return (
+        <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-500 ${
+          dark ? "bg-black text-white" : "bg-[#f5f5f5] text-gray-900"
+        }`}>
+          <div className="max-w-[560px] w-full mx-auto px-4 py-8 flex flex-col justify-center">
+            <div className="text-center mb-10 fade-in stagger-1">
+              <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent drop-shadow-sm pb-2">
+                SmartMeal India
+              </h1>
+              <p className={`mt-2 text-base font-medium ${dark ? "text-orange-300" : "text-primary-dark"}`}>
+                {existingProfile ? "Update Your Profile" : "Let's set up your profile"}
+              </p>
+            </div>
+
+            <div className="flex gap-3 mb-8 fade-in stagger-2">
+              {[1, 2, 3, 4].map((s) => (
+                <div
+                  key={s}
+                  className={`flex-1 h-2.5 rounded-full transition-all duration-700 ease-in-out ${
+                    s <= step
+                      ? "bg-gradient-to-r from-primary to-primary-dark shadow-[0_0_10px_rgba(234,91,12,0.5)]"
+                      : dark ? "bg-dark-border" : "bg-orange-200/50"
+                  }`}
+                />
+              ))}
+            </div>
+
+            <div className="fade-in stagger-3 relative">
+              {step === 1 && (
+                <div className="glass-card p-6 md:p-8 fade-in space-y-6">
+                  <div className="text-center mb-4">
+                    <span className="text-6xl animate-float inline-block drop-shadow-md">👋</span>
+                    <h2 className="text-2xl font-bold mt-4">Welcome! Tell us about yourself</h2>
+                    <p className="text-sm opacity-60 mt-2">We'll personalize your meal plan</p>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="relative group cursor-pointer outline-none"
+                    >
+                      <div className={`w-28 h-28 rounded-full overflow-hidden border-4 transition-all duration-300 ${
+                        dark ? "border-primary/50" : "border-primary/30"
+                      } group-hover:border-primary group-hover:shadow-[0_0_20px_rgba(234,91,12,0.4)] group-hover:scale-105`}>
+                        {picturePreview ? (
+                          <img src={picturePreview} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className={`w-full h-full flex flex-col items-center justify-center ${
+                            dark ? "bg-dark-border" : "bg-gradient-to-br from-orange-100 to-orange-200"
+                          }`}>
+                            <span className="text-4xl opacity-80">📷</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                        <span className="text-white text-2xl font-bold">+</span>
+                      </div>
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </div>
+
+                  <div className="space-y-4 pt-2">
+                    <div>
+                      <label className="text-xs font-bold opacity-70 uppercase tracking-wider ml-1">Your Name</label>
+                      <input
+                        type="text"
+                        placeholder="e.g., Rahul, Priya..."
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        className="input-field mt-1.5"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold opacity-70 uppercase tracking-wider ml-1">Age</label>
+                      <input
+                        type="number"
+                        min={10}
+                        max={100}
+                        value={form.age}
+                        onChange={(e) => setForm({ ...form, age: parseInt(e.target.value) || 25 })}
+                        className="input-field mt-1.5"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-bold opacity-70 uppercase tracking-wider ml-1">Gender</label>
+                      <div className="grid grid-cols-3 gap-3 mt-1.5">
+                        {[
+                          { value: "male", icon: "👨", label: "Male" },
+                          { value: "female", icon: "👩", label: "Female" },
+                          { value: "other", icon: "🧑", label: "Other" },
+                        ].map((g) => (
+                          <button
+                            key={g.value}
+                            type="button"
+                            onClick={() => setForm({ ...form, gender: g.value })}
+                            className={`p-3 md:p-4 rounded-xl text-center transition-all duration-300 border border-transparent ${
+                              form.gender === g.value
+                                ? "tab-active shadow-lg"
+                                : dark
+                                ? "bg-[#282828] text-gray-300 hover:bg-[#141414] hover:border-gray-600"
+                                : "bg-white/60 text-gray-700 hover:bg-white hover:border-orange-300 shadow-sm"
+                            }`}
+                          >
+                            <span className="text-xl md:text-2xl block mb-1">{g.icon}</span>
+                            <span className="text-xs md:text-sm font-semibold">{g.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setStep(2)}
+                    disabled={!form.name.trim()}
+                    className="btn-primary w-full py-4 text-lg mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Continue →
+                  </button>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="glass-card p-6 md:p-8 fade-in space-y-6">
+                  <div className="text-center mb-4">
+                    <span className="text-6xl animate-float inline-block drop-shadow-md">📏</span>
+                    <h2 className="text-2xl font-bold mt-4">Body Measurements</h2>
+                    <p className="text-sm opacity-60 mt-2">This helps us calculate your BMI & calorie needs</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <div className="flex justify-between items-center mb-1.5">
+                        <label className="text-xs font-bold opacity-70 uppercase tracking-wider ml-1">Weight</label>
+                        <span className="font-bold text-primary">{form.weightKg} kg</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={30}
+                        max={150}
+                        step={0.5}
+                        value={form.weightKg}
+                        onChange={(e) => setForm({ ...form, weightKg: parseFloat(e.target.value) })}
+                        className="w-full accent-primary h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div className="flex justify-between text-[10px] opacity-40 mt-1 px-1">
+                        <span>30kg</span><span>150kg</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-center mb-1.5">
+                        <label className="text-xs font-bold opacity-70 uppercase tracking-wider ml-1">Height</label>
+                        <span className="font-bold text-primary">{form.heightCm} cm</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={120}
+                        max={220}
+                        step={1}
+                        value={form.heightCm}
+                        onChange={(e) => setForm({ ...form, heightCm: parseFloat(e.target.value) })}
+                        className="w-full accent-primary h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div className="flex justify-between text-[10px] opacity-40 mt-1 px-1">
+                        <span>120cm</span><span>220cm</span>
+                      </div>
+                      <p className="text-xs opacity-50 text-right mt-1 font-medium">
+                        {Math.floor(form.heightCm / 30.48)}'{Math.round((form.heightCm / 2.54) % 12)}" ft
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className={`rounded-xl p-5 text-center transition-all duration-300 ${dark ? "bg-[#282828]" : "bg-orange-50"} border border-current/10 shadow-inner mt-4`}>
+                    <p className="text-xs opacity-60 uppercase tracking-wider font-bold">Your BMI</p>
+                    <div className="flex items-end justify-center gap-2 mt-1">
+                      <p className={`text-4xl font-black ${bmiCat.color} drop-shadow-sm`}>{bmi}</p>
+                    </div>
+                    <p className={`text-sm mt-1.5 font-semibold ${bmiCat.color}`}>{bmiCat.emoji} {bmiCat.label}</p>
+                  </div>
+
+                  <div className="flex gap-4 pt-2">
+                    <button onClick={() => setStep(1)} className="flex-1 py-3 rounded-xl font-bold border-2 border-primary/20 hover:border-primary/50 text-primary transition-colors">
+                      ← Back
+                    </button>
+                    <button onClick={() => setStep(3)} className="btn-primary flex-[2] py-3 text-lg">
+                      Next Step →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div className="glass-card p-6 md:p-8 fade-in space-y-6">
+                  <div className="text-center mb-4">
+                    <span className="text-6xl animate-float inline-block drop-shadow-md">🎯</span>
+                    <h2 className="text-2xl font-bold mt-4">Your Lifestyle & Goals</h2>
+                    <p className="text-sm opacity-60 mt-2">How active are you in daily life?</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {Object.entries(LIFESTYLE_INFO).map(([key, info]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setForm({ ...form, lifestyle: key })}
+                        className={`w-full p-4 rounded-xl text-left transition-all duration-300 flex items-center gap-5 border ${
+                          form.lifestyle === key
+                            ? "tab-active border-transparent scale-[1.02]"
+                            : dark
+                            ? "bg-[#282828] border-transparent text-gray-300 hover:bg-[#141414] hover:border-gray-600"
+                            : "bg-white/60 border-transparent text-gray-700 hover:bg-white hover:border-orange-300 shadow-sm"
+                        }`}
+                      >
+                        <span className="text-4xl flex-shrink-0 drop-shadow-sm">{info.icon}</span>
+                        <div className="min-w-0">
+                          <p className="font-bold text-base">{info.label}</p>
+                          <p className={`text-xs mt-1 leading-relaxed ${form.lifestyle === key ? "opacity-90" : "opacity-60"}`}>
+                            {info.description}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="pt-2">
+                    <label className="text-xs font-bold opacity-70 uppercase tracking-wider ml-1">Your Primary Goal</label>
+                    <div className="grid grid-cols-3 gap-3 mt-2">
+                      {Object.entries(GOAL_INFO).map(([key, info]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setForm({ ...form, goal: key })}
+                          className={`p-3 rounded-xl text-center transition-all duration-300 border ${
+                            form.goal === key
+                              ? "tab-active border-transparent"
+                              : dark
+                              ? "bg-[#282828] border-transparent text-gray-300 hover:bg-[#141414] hover:border-gray-600"
+                              : "bg-white/60 border-transparent text-gray-600 hover:bg-white hover:border-orange-300 shadow-sm"
+                          }`}
+                        >
+                          <span className="text-3xl block mb-1.5 drop-shadow-sm">{info.icon}</span>
+                          <span className="text-xs font-bold leading-tight">{info.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <button onClick={() => setStep(2)} className="flex-1 py-3 rounded-xl font-bold border-2 border-primary/20 hover:border-primary/50 text-primary transition-colors">
+                      ← Back
+                    </button>
+                    <button onClick={() => setStep(4)} className="btn-primary flex-[2] py-3 text-lg">
+                      See My Plan →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {step === 4 && (
+                <div className="glass-card p-6 md:p-8 fade-in space-y-6">
+                  <div className="text-center mb-4">
+                    <span className="text-6xl animate-float inline-block drop-shadow-md">✨</span>
+                    <h2 className="text-2xl font-bold mt-4">Your Personalized Plan</h2>
+                    <p className="text-sm opacity-60 mt-2">Here's what we recommend for you, <span className="font-bold text-primary">{form.name || "friend"}</span>!</p>
+                  </div>
+
+                  {picturePreview && (
+                    <div className="flex justify-center mb-2">
+                      <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-primary shadow-[0_0_15px_rgba(234,91,12,0.3)]">
+                        <img src={picturePreview} alt="Profile" className="w-full h-full object-cover" />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={`rounded-xl p-5 space-y-4 border ${dark ? "bg-[#282828] border-gray-700" : "bg-white/60 border-orange-200/50"}`}>
+                    <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                      <div>
+                        <p className="opacity-50 text-[10px] font-bold uppercase tracking-wider">Age</p>
+                        <p className="font-black text-lg mt-1">{form.age}</p>
+                      </div>
+                      <div>
+                        <p className="opacity-50 text-[10px] font-bold uppercase tracking-wider">Gender</p>
+                        <p className="font-black text-lg mt-1 capitalize">{form.gender.charAt(0)}</p>
+                      </div>
+                      <div>
+                        <p className="opacity-50 text-[10px] font-bold uppercase tracking-wider">Weight</p>
+                        <p className="font-black text-lg mt-1">{form.weightKg}<span className="text-[10px] font-normal">kg</span></p>
+                      </div>
+                      <div>
+                        <p className="opacity-50 text-[10px] font-bold uppercase tracking-wider">Height</p>
+                        <p className="font-black text-lg mt-1">{form.heightCm}<span className="text-[10px] font-normal">cm</span></p>
+                      </div>
+                    </div>
+                    <div className="flex justify-between pt-3 border-t border-current/10 text-xs">
+                      <div className="text-left">
+                        <p className="text-[10px] opacity-50 font-bold uppercase tracking-wider">Lifestyle</p>
+                        <p className="font-bold mt-1 flex items-center gap-1">
+                          {LIFESTYLE_INFO[form.lifestyle]?.icon} {LIFESTYLE_INFO[form.lifestyle]?.label}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[10px] opacity-50 font-bold uppercase tracking-wider">Goal</p>
+                        <p className="font-bold mt-1 flex items-center gap-1 justify-end">
+                          {GOAL_INFO[form.goal]?.icon} {GOAL_INFO[form.goal]?.label}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className={`rounded-xl p-4 text-center shadow-lg relative overflow-hidden ${
+                      bmiCat.color === "text-green-500" ? "bg-gradient-to-br from-green-400 to-green-600" : 
+                      bmiCat.color === "text-blue-500" ? "bg-gradient-to-br from-blue-400 to-blue-600" : 
+                      bmiCat.color === "text-yellow-500" ? "bg-gradient-to-br from-yellow-400 to-yellow-600" : 
+                      "bg-gradient-to-br from-red-400 to-red-600"} text-white`}>
+                      <div className="absolute inset-0 bg-white/10 opacity-50"></div>
+                      <p className="text-3xl font-black relative z-10">{bmi}</p>
+                      <p className="text-xs opacity-90 font-medium mt-1 relative z-10">BMI · {bmiCat.label}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-primary to-primary-dark shadow-[0_4px_15px_rgba(234,91,12,0.4)] text-white rounded-xl p-4 text-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%,transparent_100%)] bg-[length:200%_200%] animate-[shine_2s_infinite]"></div>
+                      <p className="text-3xl font-black relative z-10 drop-shadow-sm">{dailyCal}</p>
+                      <p className="text-xs opacity-90 font-medium mt-1 relative z-10 uppercase tracking-wide">kcal / day</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-md text-white rounded-xl p-3 text-center">
+                      <p className="text-xl font-black">{macros.protein}g</p>
+                      <p className="text-[10px] opacity-90 font-bold uppercase tracking-wider mt-1">Protein</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-blue-400 to-blue-600 shadow-md text-white rounded-xl p-3 text-center">
+                      <p className="text-xl font-black">{macros.carbs}g</p>
+                      <p className="text-[10px] opacity-90 font-bold uppercase tracking-wider mt-1">Carbs</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-rose-400 to-rose-600 shadow-md text-white rounded-xl p-3 text-center">
+                      <p className="text-xl font-black">{macros.fat}g</p>
+                      <p className="text-[10px] opacity-90 font-bold uppercase tracking-wider mt-1">Fat</p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <button onClick={() => setStep(3)} className="flex-1 py-4 rounded-xl font-bold border-2 border-primary/20 hover:border-primary/50 text-primary transition-colors">
+                      ← Back
+                    </button>
+                    <button
+                      onClick={saveProfile}
+                      className="btn-primary flex-[2] py-4 text-lg pulse-glow"
+                    >
+                      ✅ Let's Start!
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // TABS COMPONENTS
+    // ==========================================
+
+    function ProfileTab({ dark, profile, onEdit, meals, exercises, water }) {
+      const dailyTarget = calcDailyCalories(profile);
+      const macros = calcMacroTargets(dailyTarget, profile.lifestyle, profile.goal);
+      const bmi = calcBMI(profile.weightKg, profile.heightCm);
+      const bmiCat = bmiCategory(bmi);
+      const lifestyleInfo = LIFESTYLE_INFO[profile.lifestyle] || LIFESTYLE_INFO.normal;
+      const goalInfo = GOAL_INFO[profile.goal] || GOAL_INFO.maintain;
+      const exTarget = EXERCISE_TARGETS[profile.lifestyle] || 45;
+
+      const today = new Date().getDay();
+      
+      const weeklyCalories = [0, 1, 2, 3, 4, 5, 6].map(day => 
+        meals.filter(m => m.dayOfWeek === day).reduce((sum, m) => sum + m.calories, 0)
+      );
+
+      const weeklyExercises = [0, 1, 2, 3, 4, 5, 6].map(day => 
+        exercises.filter(e => e.dayOfWeek === day).reduce((sum, e) => sum + e.durationMinutes, 0)
+      );
+
+      const totalWeekCal = weeklyCalories.reduce((a, b) => a + b, 0);
+      const totalWeekEx = weeklyExercises.reduce((a, b) => a + b, 0);
+      const avgDailyCal = Math.round(totalWeekCal / 7);
+      
+      const daysOnTarget = weeklyCalories.filter(
+        c => c > 0 && c <= dailyTarget * 1.1 && c >= dailyTarget * 0.5
+      ).length;
+
+      const daysExercised = weeklyExercises.filter(m => m >= exTarget).length;
+      const maxCal = Math.max(...weeklyCalories, dailyTarget, 1);
+      const maxExMin = Math.max(...weeklyExercises, exTarget, 1);
+
+      let streak = 0;
+      for (let i = today; i >= 0; i--) {
+        if (weeklyCalories[i] > 0) streak++;
+        else break;
+      }
+
+      const totalWaterGlasses = Object.values(water).reduce((sum, g) => sum + g, 0);
+
+      const achievements = [
+        { icon: "🥇", title: "First Meal Logged", earned: meals.length >= 1 },
+        { icon: "💪", title: "First Exercise Done", earned: exercises.length >= 1 },
+        { icon: "💧", title: "Hydration Hero", earned: totalWaterGlasses >= 8 },
+        { icon: "📅", title: "3-Day Streak", earned: streak >= 3 },
+        { icon: "🔥", title: "Full Week Tracked", earned: daysOnTarget >= 5 },
+        { icon: "🏋️", title: "Exercise 5 Days", earned: daysExercised >= 5 },
+        { icon: "🎯", title: "On Target 7 Days", earned: daysOnTarget >= 7 },
+        { icon: "⭐", title: "50+ Meals Logged", earned: meals.length >= 50 },
+      ];
+
+      const SHORT_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const DAYS_FULL = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+      return (
+        <div className="space-y-4">
+          <div className="glass-card p-6 text-center">
+            <div className="relative inline-block mb-4">
+              <div className={`w-28 h-28 rounded-full overflow-hidden border-4 transition-all ${
+                dark ? "border-primary/60" : "border-primary/40"
+              }`}>
+                {profile.profilePicture ? (
+                  <img
+                    src={profile.profilePicture}
+                    alt={profile.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className={`w-full h-full flex items-center justify-center text-5xl ${
+                    dark ? "bg-dark-border" : "bg-gradient-to-br from-orange-100 to-orange-200"
+                  }`}>
+                    {profile.gender === "female" ? "👩" : profile.gender === "other" ? "🧑" : "👨"}
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={onEdit}
+                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-lg bg-primary text-white hover:scale-110 transition-all"
+              >
+                ✏️
+              </button>
+            </div>
+
+            <h2 className="text-2xl font-bold">{profile.name}</h2>
+            <p className="text-sm opacity-60 mt-1">
+              {profile.age} years · {profile.gender === "female" ? "Female" : profile.gender === "other" ? "Other" : "Male"}
+            </p>
+            <div className="flex items-center justify-center gap-3 mt-2">
+              <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
+                dark ? "bg-[#282828] text-gray-300" : "bg-orange-100 text-primary"
+              }`}>
+                {lifestyleInfo.icon} {lifestyleInfo.label}
+              </span>
+              <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
+                dark ? "bg-[#282828] text-gray-300" : "bg-green-100 text-green-700"
+              }`}>
+                {goalInfo.icon} {goalInfo.label}
+              </span>
+            </div>
+          </div>
+
+          <div className="glass-card p-5">
+            <h3 className="font-bold text-sm mb-3">📊 Body Stats</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+                <span className="text-xl block">⚖️</span>
+                <p className="text-lg font-bold mt-1">{profile.weightKg}</p>
+                <p className="text-[10px] opacity-50">kg Weight</p>
+              </div>
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+                <span className="text-xl block">📏</span>
+                <p className="text-lg font-bold mt-1">{profile.heightCm}</p>
+                <p className="text-[10px] opacity-50">cm Height</p>
+              </div>
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+                <span className="text-xl block">{bmiCat.emoji}</span>
+                <p className={`text-lg font-bold mt-1 ${bmiCat.color}`}>{bmi}</p>
+                <p className="text-[10px] opacity-50">{bmiCat.label} BMI</p>
+              </div>
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+                <span className="text-xl block">🎯</span>
+                <p className="text-lg font-bold mt-1">{dailyTarget}</p>
+                <p className="text-[10px] opacity-50">kcal/day Target</p>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-current/10">
+              <p className="text-xs font-semibold mb-2 opacity-60">Daily Macro Targets</p>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-xl p-3 text-center bg-gradient-to-br from-green-400 to-green-500 text-white">
+                  <p className="text-lg font-bold">{macros.protein}g</p>
+                  <p className="text-[10px] opacity-80">Protein</p>
+                </div>
+                <div className="rounded-xl p-3 text-center bg-gradient-to-br from-blue-400 to-blue-500 text-white">
+                  <p className="text-lg font-bold">{macros.carbs}g</p>
+                  <p className="text-[10px] opacity-80">Carbs</p>
+                </div>
+                <div className="rounded-xl p-3 text-center bg-gradient-to-br from-pink-400 to-pink-500 text-white">
+                  <p className="text-lg font-bold">{macros.fat}g</p>
+                  <p className="text-[10px] opacity-80">Fat</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="glass-card p-5">
+            <h3 className="font-bold text-sm mb-1">📅 Weekly Plan Tracking</h3>
+            <p className="text-xs opacity-50 mb-4">See how your week is going vs your targets</p>
+
+            <div className="mb-6">
+              <p className="text-xs font-semibold mb-2 opacity-70">🔥 Daily Calories vs Target ({dailyTarget} kcal)</p>
+              <div className="flex items-end gap-2 h-32">
+                {weeklyCalories.map((cal, i) => {
+                  const pct = (cal / maxCal) * 100;
+                  const targetPct = (dailyTarget / maxCal) * 100;
+                  const isOver = cal > dailyTarget;
+                  const isToday = i === today;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                      {cal > 0 && (
+                        <span className={`text-[9px] font-bold ${isOver ? "text-red-500" : "text-primary"}`}>
+                          {cal}
+                        </span>
+                      )}
+                      <div className="w-full relative" style={{ height: `${Math.max(pct, 3)}%` }}>
+                        <div
+                          className={`w-full h-full rounded-t-md transition-all duration-700 ${
+                            isToday
+                              ? "bg-gradient-to-t from-primary to-[#f39c12] shadow-md shadow-primary/30"
+                              : isOver
+                              ? "bg-gradient-to-t from-red-400 to-red-300"
+                              : cal > 0
+                              ? dark ? "bg-gradient-to-t from-orange-500/60 to-orange-400/40" : "bg-gradient-to-t from-orange-300 to-orange-200"
+                              : dark ? "bg-dark-border/50" : "bg-gray-200/60"
+                          }`}
+                        />
+                        <div
+                          className="absolute left-0 right-0 border-t-2 border-dashed border-primary/45"
+                          style={{ bottom: `${targetPct / (pct || 1) * 100}%`, maxHeight: "100%" }}
+                        />
+                      </div>
+                      <span className={`text-[10px] font-semibold ${isToday ? "text-primary" : "opacity-50"}`}>
+                        {SHORT_DAYS[i]}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <p className="text-xs font-semibold mb-2 opacity-70">🏋️ Daily Exercise vs Target ({exTarget} min)</p>
+              <div className="flex items-end gap-2 h-24">
+                {weeklyExercises.map((mins, i) => {
+                  const pct = (mins / maxExMin) * 100;
+                  const hitTarget = mins >= exTarget;
+                  const isToday = i === today;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                      {mins > 0 && (
+                        <span className={`text-[9px] font-bold ${hitTarget ? "text-accent" : "text-purple-500"}`}>
+                          {mins}m
+                        </span>
+                      )}
+                      <div
+                        className={`w-full rounded-t-md transition-all duration-700 ${
+                          isToday
+                            ? hitTarget
+                              ? "bg-gradient-to-t from-green-500 to-green-400"
+                              : "bg-gradient-to-t from-purple-500 to-purple-400"
+                            : hitTarget
+                            ? dark ? "bg-gradient-to-t from-green-500/60 to-green-400/40" : "bg-gradient-to-t from-green-300 to-green-200"
+                            : mins > 0
+                            ? dark ? "bg-gradient-to-t from-purple-500/60 to-purple-400/40" : "bg-gradient-to-t from-purple-200 to-purple-100"
+                            : dark ? "bg-dark-border/50" : "bg-gray-200/60"
+                        }`}
+                        style={{ height: `${Math.max(pct, 3)}%` }}
+                      />
+                      <span className={`text-[10px] font-semibold ${isToday ? "text-purple-500" : "opacity-50"}`}>
+                        {SHORT_DAYS[i]}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 pt-3 border-t border-current/10">
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-orange-50"}`}>
+                <p className="text-lg font-bold text-primary">{totalWeekCal.toLocaleString()}</p>
+                <p className="text-[10px] opacity-50">Total kcal</p>
+              </div>
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-purple-50"}`}>
+                <p className="text-lg font-bold text-purple-500">{totalWeekEx}</p>
+                <p className="text-[10px] opacity-50">Exercise min</p>
+              </div>
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-green-50"}`}>
+                <p className="text-lg font-bold text-accent">{daysOnTarget}/7</p>
+                <p className="text-[10px] opacity-50">Days on target</p>
+              </div>
+              <div className={`rounded-xl p-3 text-center ${dark ? "bg-[#282828]" : "bg-blue-50"}`}>
+                <p className="text-lg font-bold text-blue-500">{avgDailyCal}</p>
+                <p className="text-[10px] opacity-50">Avg kcal/day</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="glass-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-sm">🏆 Achievements</h3>
+              <div className={`text-xs px-3 py-1 rounded-full font-semibold ${
+                dark ? "bg-primary/20 text-primary" : "bg-orange-100 text-primary"
+              }`}>
+                🔥 {streak}-day streak
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {achievements.map((a) => (
+                <div
+                  key={a.title}
+                  className={`p-3 rounded-xl text-center transition-all ${
+                    a.earned
+                      ? dark
+                        ? "bg-gradient-to-br from-primary/20 to-primary/10 border border-primary/30"
+                        : "bg-gradient-to-br from-orange-50 to-orange-100 border border-primary/20 shadow-sm"
+                      : dark
+                      ? "bg-[#282828]/40 opacity-40"
+                      : "bg-gray-100/60 opacity-40"
+                  }`}
+                >
+                  <span className={`text-2xl block ${a.earned ? "" : "grayscale"}`}>{a.icon}</span>
+                  <p className={`text-[10px] mt-1 font-semibold ${a.earned ? "" : "opacity-50"}`}>
+                    {a.title}
+                  </p>
+                  {a.earned && (
+                    <p className="text-[8px] text-accent mt-0.5 font-bold">✓ EARNED</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function ActivityTab({ dark, profile, health, onSyncApp, onDisconnectApp, onAddManualSteps, tasks, onUpdateTask, reminders }) {
+      const [showConnect, setShowConnect] = useState(false);
+      const [showCustom, setShowCustom] = useState(false);
+      const [customApp, setCustomApp] = useState("");
+      
+      const HEALTH_APPS = [
+        { id: "google_fit", name: "Google Fit", icon: "🟢", color: "from-green-500 to-green-600" },
+        { id: "apple_health", name: "Apple Health", icon: "🍎", color: "from-red-500 to-pink-500" },
+        { id: "samsung_health", name: "Samsung Health", icon: "💙", color: "from-blue-500 to-blue-600" },
+      ];
+
+      const TASK_ICONS = {
+        steps: "👟",
+        water: "💧",
+        exercise: "🏋️",
+        meals: "🍽️",
+        sleep: "😴",
+        meditation: "🧘",
+      };
+
+      const REMINDER_ICONS = {
+        meal: "🍽️",
+        exercise: "🏋️",
+        water: "💧",
+        medicine: "💊",
+      };
+
+      const stepsProgress = health.steps ? Math.min((health.steps / health.stepsGoal) * 100, 100) : 0;
+      const caloriesProgress = health.caloriesBurned ? Math.min((health.caloriesBurned / health.caloriesGoal) * 100, 100) : 0;
+      const activeProgress = health.activeMinutes ? Math.min((health.activeMinutes / health.activeMinutesGoal) * 100, 100) : 0;
+      const sleepProgress = health.sleepHours ? Math.min((health.sleepHours / health.sleepGoal) * 100, 100) : 0;
+
+      const now = new Date();
+      const currentTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+      return (
+        <div className="space-y-4">
+          <div className="glass-card p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h2 className="font-bold text-sm flex items-center gap-2">
+                  📱 Health App Sync
+                </h2>
+                <p className="text-xs opacity-50 mt-0.5">
+                  {health.source && health.source !== "none"
+                    ? `Connected to ${HEALTH_APPS.find(a => a.id === health.source)?.name || health.source}`
+                    : "Connect your fitness tracker"
+                  }
+                </p>
+              </div>
+              {health.source && health.source !== "none" ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => onSyncApp(health.source)}
+                    className="btn-accent text-xs py-1.5 px-3"
+                  >
+                    🔄 Sync Now
+                  </button>
+                  <button
+                    onClick={onDisconnectApp}
+                    className="text-xs px-2 py-1.5 rounded-lg text-red-500 hover:bg-red-50"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowConnect(!showConnect)}
+                  className="btn-primary text-xs py-1.5 px-3"
+                >
+                  + Connect App
+                </button>
+              )}
+            </div>
+
+            {showConnect && !showCustom && (
+              <div className="grid grid-cols-4 gap-2 mt-3 pt-3 border-t border-current/10 fade-in">
+                {HEALTH_APPS.map((app) => (
+                  <button
+                    key={app.id}
+                    onClick={() => {
+                      onSyncApp(app.id);
+                      setShowConnect(false);
+                    }}
+                    className={`p-3 rounded-xl text-center transition-all ${
+                      dark ? "bg-[#282828] hover:bg-[#141414]" : "bg-white/60 hover:bg-gray-100"
+                    }`}
+                  >
+                    <span className="text-2xl block">{app.icon}</span>
+                    <span className="text-[10px] mt-1 block font-semibold opacity-70">{app.name}</span>
+                  </button>
+                ))}
+                <button
+                  onClick={() => setShowCustom(true)}
+                  className={`p-3 rounded-xl text-center transition-all ${
+                    dark ? "bg-[#282828] hover:bg-[#141414]" : "bg-white/60 hover:bg-gray-100"
+                  }`}
+                >
+                  <span className="text-2xl block">➕</span>
+                  <span className="text-[10px] mt-1 block font-semibold opacity-70">Other App</span>
+                </button>
+              </div>
+            )}
+
+            {showConnect && showCustom && (
+              <div className="mt-3 pt-3 border-t border-current/10 fade-in flex items-center gap-2">
+                <input 
+                  type="text" 
+                  value={customApp}
+                  onChange={(e) => setCustomApp(e.target.value)}
+                  placeholder="e.g. Fitbit, Garmin..."
+                  className="input-field py-2 text-sm flex-1"
+                />
+                <button 
+                  onClick={() => {
+                    if(customApp.trim()) {
+                      onSyncApp(customApp.trim());
+                      setShowConnect(false);
+                      setShowCustom(false);
+                      setCustomApp("");
+                    }
+                  }}
+                  className="btn-accent py-2 px-4 text-xs font-bold"
+                  disabled={!customApp.trim()}
+                >
+                  BIND
+                </button>
+                <button 
+                  onClick={() => setShowCustom(false)}
+                  className="btn-danger py-2 px-3 text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="glass-card p-5">
+            <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
+              🎯 Today's Activity Rings
+            </h3>
+            
+            <div className="flex items-center justify-center gap-6">
+              <div className="relative w-40 h-40">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="45" fill="none" stroke={dark ? "#3a3a5a" : "#e5e7eb"} strokeWidth="8" />
+                  <circle cx="50" cy="50" r="35" fill="none" stroke={dark ? "#3a3a5a" : "#e5e7eb"} strokeWidth="8" />
+                  <circle cx="50" cy="50" r="25" fill="none" stroke={dark ? "#3a3a5a" : "#e5e7eb"} strokeWidth="8" />
+                  
+                  <circle
+                    cx="50" cy="50" r="45" fill="none"
+                    stroke="url(#stepsGradient)"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeDasharray={`${stepsProgress * 2.83} 283`}
+                    className="transition-all duration-1000"
+                  />
+                  <circle
+                    cx="50" cy="50" r="35" fill="none"
+                    stroke="url(#caloriesGradient)"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeDasharray={`${caloriesProgress * 2.2} 220`}
+                    className="transition-all duration-1000"
+                  />
+                  <circle
+                    cx="50" cy="50" r="25" fill="none"
+                    stroke="url(#activeGradient)"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeDasharray={`${activeProgress * 1.57} 157`}
+                    className="transition-all duration-1000"
+                  />
+                  
+                  <defs>
+                    <linearGradient id="stepsGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#f43f5e" />
+                      <stop offset="100%" stopColor="#ec4899" />
+                    </linearGradient>
+                    <linearGradient id="caloriesGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#22c55e" />
+                      <stop offset="100%" stopColor="#a3e635" />
+                    </linearGradient>
+                    <linearGradient id="activeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#3b82f6" />
+                      <stop offset="100%" stopColor="#06b6d4" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-2xl font-bold">{health.steps?.toLocaleString() || 0}</span>
+                  <span className="text-[10px] opacity-50">steps</span>
+                </div>
+              </div>
+
+              <div className="space-y-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-rose-500 to-pink-500" />
+                  <div>
+                    <p className="font-semibold">{health.steps || 0}/{health.stepsGoal || 10000} steps</p>
+                    <p className="opacity-50">Steps · {Math.round(stepsProgress)}%</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-green-500 to-lime-400" />
+                  <div>
+                    <p className="font-semibold">{health.caloriesBurned || 0}/{health.caloriesGoal || 500} kcal</p>
+                    <p className="opacity-50">Calories · {Math.round(caloriesProgress)}%</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400" />
+                  <div>
+                    <p className="font-semibold">{health.activeMinutes || 0}/{health.activeMinutesGoal || 30} min</p>
+                    <p className="opacity-50">Active · {Math.round(activeProgress)}%</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-current/10">
+              <span className="text-xs opacity-50">Quick add:</span>
+              {[500, 1000, 2000].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => onAddManualSteps(s)}
+                  className={`text-xs px-3 py-1.5 rounded-full font-semibold transition-all ${
+                    dark ? "bg-[#282828] hover:bg-primary/30" : "bg-orange-100 hover:bg-orange-200"
+                  }`}
+                >
+                  +{s} 👟
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div className={`rounded-xl p-3 text-center relative overflow-hidden ${dark ? "bg-[#282828]" : "bg-white/60"}`}>
+              <span className="text-xl">❤️</span>
+              <p className="text-lg font-bold mt-1">{health.heartRateAvg || "--"}<span className="text-xs opacity-50 ml-0.5">bpm</span></p>
+              <p className="text-[10px] opacity-50">Heart Rate</p>
+              <p className="text-[9px] opacity-40 mt-0.5">{health.heartRateAvg ? `${health.heartRateMin}-${health.heartRateMax}` : "No data"}</p>
+            </div>
+            <div className={`rounded-xl p-3 text-center relative overflow-hidden ${dark ? "bg-[#282828]" : "bg-white/60"}`}>
+              {sleepProgress > 0 && (
+                <div className="absolute inset-0 bg-gradient-to-t from-indigo-400 to-purple-500 opacity-20" style={{ height: `${sleepProgress}%`, top: 'auto' }} />
+              )}
+              <span className="text-xl">😴</span>
+              <p className="text-lg font-bold mt-1">{health.sleepHours?.toFixed(1) || "--"}<span className="text-xs opacity-50 ml-0.5">hrs</span></p>
+              <p className="text-[10px] opacity-50">Sleep</p>
+              <p className="text-[9px] opacity-40 mt-0.5">Goal: {health.sleepGoal || 8}h</p>
+            </div>
+            <div className={`rounded-xl p-3 text-center relative overflow-hidden ${dark ? "bg-[#282828]" : "bg-white/60"}`}>
+              <span className="text-xl">📍</span>
+              <p className="text-lg font-bold mt-1">{health.distance?.toFixed(1) || "0"}<span className="text-xs opacity-50 ml-0.5">km</span></p>
+              <p className="text-[10px] opacity-50">Distance</p>
+              <p className="text-[9px] opacity-40 mt-0.5">{health.floorsClimbed || 0} floors</p>
+            </div>
+            <div className={`rounded-xl p-3 text-center relative overflow-hidden ${dark ? "bg-[#282828]" : "bg-white/60"}`}>
+              {caloriesProgress > 0 && (
+                <div className="absolute inset-0 bg-gradient-to-t from-green-400 to-emerald-500 opacity-20" style={{ height: `${caloriesProgress}%`, top: 'auto' }} />
+              )}
+              <span className="text-xl">🔥</span>
+              <p className="text-lg font-bold mt-1">{health.caloriesBurned || 0}<span className="text-xs opacity-50 ml-0.5">kcal</span></p>
+              <p className="text-[10px] opacity-50">Burned</p>
+              <p className="text-[9px] opacity-40 mt-0.5">Goal: {health.caloriesGoal || 500}</p>
+            </div>
+          </div>
+
+          <div className="glass-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-sm flex items-center gap-2">
+                ✅ Today's Goals
+              </h3>
+              <span className="text-xs opacity-50">
+                {tasks.filter(t => t.isCompleted).length}/{tasks.length} completed
+              </span>
+            </div>
+
+            {tasks.length === 0 ? (
+              <div className="text-center py-6 opacity-50">
+                <span className="text-3xl block mb-2">🎯</span>
+                <p className="text-sm">No goals set for today</p>
+                <p className="text-xs mt-1">Goals are auto-created from your plan</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {tasks.map((task) => {
+                  const progress = task.targetValue > 0 
+                    ? Math.min((task.currentValue / task.targetValue) * 100, 100)
+                    : 0;
+                  return (
+                    <div
+                      key={task.id}
+                      className={`p-3 rounded-xl transition-all ${
+                        task.isCompleted
+                          ? dark ? "bg-green-900/30 border border-green-500/30" : "bg-green-50 border border-green-200"
+                          : dark ? "bg-dark-border/50" : "bg-white/60"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{TASK_ICONS[task.category] || "🎯"}</span>
+                          <span className={`font-semibold text-sm ${task.isCompleted ? "line-through opacity-60" : ""}`}>
+                            {task.title}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-bold ${
+                            task.isCompleted ? "text-green-500" : "opacity-60"
+                          }`}>
+                            {task.currentValue}/{task.targetValue} {task.unit}
+                          </span>
+                          {!task.isCompleted && (
+                            <button
+                              onClick={() => onUpdateTask(task.id, Math.min(task.currentValue + 1, task.targetValue))}
+                              className="w-6 h-6 rounded-full bg-primary text-white text-xs font-bold hover:scale-110 transition-transform"
+                            >
+                              +
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className={`h-2 rounded-full overflow-hidden ${dark ? "bg-dark-border" : "bg-gray-100"}`}>
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            task.isCompleted
+                              ? "bg-gradient-to-r from-green-400 to-green-500"
+                              : "bg-gradient-to-r from-primary to-amber-400"
+                          }`}
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="glass-card p-5">
+            <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
+              ⏰ Today's Reminders
+            </h3>
+
+            {reminders.length === 0 ? (
+              <div className="text-center py-6 opacity-50">
+                <span className="text-3xl block mb-2">🔔</span>
+                <p className="text-sm">No active reminders</p>
+              </div>
+            ) : (
+              <div className="relative">
+                <div className={`absolute left-5 top-0 bottom-0 w-0.5 ${dark ? "bg-[#282828]" : "bg-orange-200"}`} />
+                
+                <div className="space-y-4">
+                  {reminders
+                    .sort((a, b) => a.time.localeCompare(b.time))
+                    .map((reminder, idx) => {
+                      const isPast = reminder.time < currentTime;
+                      const isCurrent = !isPast && (
+                        idx === 0 || reminders[idx - 1].time < currentTime
+                      );
+                      
+                      return (
+                        <div key={reminder.id} className="relative flex items-start gap-4 pl-2">
+                          <div className={`relative z-10 w-7 h-7 rounded-full flex items-center justify-center text-sm flex-shrink-0 ${
+                            isPast
+                              ? "bg-gray-300 text-gray-500"
+                              : isCurrent
+                              ? "bg-gradient-to-br from-primary to-amber-400 text-white shadow-lg shadow-primary/30 animate-pulse"
+                              : dark
+                              ? "bg-dark-card border-2 border-primary/50"
+                              : "bg-white border-2 border-primary/50"
+                          }`}>
+                            {REMINDER_ICONS[reminder.type] || "🔔"}
+                          </div>
+                          
+                          <div className={`flex-1 pb-4 ${isPast ? "opacity-50" : ""}`}>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs font-mono ${isCurrent ? "text-primary font-bold" : "opacity-60"}`}>
+                                {reminder.time}
+                              </span>
+                              {isCurrent && (
+                                <span className="text-[9px] bg-primary text-white px-2 py-0.5 rounded-full font-bold animate-pulse">
+                                  UPCOMING
+                                </span>
+                              )}
+                              {isPast && (
+                                <span className="text-[9px] bg-gray-200 text-gray-500 px-2 py-0.5 rounded-full">
+                                  DONE
+                                </span>
+                              )}
+                            </div>
+                            <p className={`font-semibold text-sm mt-0.5 ${isPast ? "line-through" : ""}`}>
+                              {reminder.title}
+                            </p>
+                            {reminder.description && (
+                              <p className="text-xs opacity-50 mt-0.5">{reminder.description}</p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {profile.lifestyle === "gaming" && (
+            <div className={`glass-card p-4 border-l-4 border-purple-500 ${dark ? "bg-purple-900/20" : ""}`}>
+              <p className="font-semibold text-sm mb-2">🎮 Gaming Activity Tips:</p>
+              <div className="grid grid-cols-2 gap-2 text-xs opacity-70">
+                <div className="flex items-center gap-2">
+                  <span>👟</span>
+                  <span>Walk during loading screens</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>💪</span>
+                  <span>Do squats between matches</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>👁️</span>
+                  <span>20-20-20 eye rule</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span>🧘</span>
+                  <span>Stretch every 45 min</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function MyPlanTab({ dark, profile, onApplyPlan }) {
+      const [plan, setPlan] = useState(null);
+      const [selectedDay, setSelectedDay] = useState(new Date().getDay());
+      const [preferVeg, setPreferVeg] = useState(true);
+      const [applied, setApplied] = useState(false);
+
+      const dailyTarget = calcDailyCalories(profile);
+      const macros = calcMacroTargets(dailyTarget, profile.lifestyle, profile.goal);
+      const bmi = calcBMI(profile.weightKg, profile.heightCm);
+      const bmiCat = bmiCategory(bmi);
+      const lifestyleInfo = LIFESTYLE_INFO[profile.lifestyle];
+      const goalInfo = GOAL_INFO[profile.goal];
+
+      const generateNewPlan = useCallback(() => {
+        const newPlan = generateWeeklyPlan(dailyTarget, profile.lifestyle, profile.goal, preferVeg);
+        setPlan(newPlan);
+        setApplied(false);
+      }, [dailyTarget, profile, preferVeg]);
+
+      useEffect(() => {
+        generateNewPlan();
+      }, [generateNewPlan]);
+
+      const handleApply = () => {
+        if (!plan) return;
+        onApplyPlan(plan);
+        setApplied(true);
+      };
+
+      const dayPlan = plan?.days[selectedDay] || null;
+      const DAYS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const MEAL_ICONS = { breakfast: "🌅", lunch: "☀️", dinner: "🌙", snack: "🍿" };
+      const CAT_ICONS = { cardio: "🏃", strength: "💪", yoga: "🧘", sports: "⚽" };
+
+      return (
+        <div className="space-y-4">
+          <div className="glass-card p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-lg font-bold flex items-center gap-2">
+                  ✨ Your Personalized Plan
+                </h2>
+                <p className="text-xs opacity-60 mt-1">
+                  Based on your profile: {profile.name}, {profile.age}y, {profile.weightKg}kg
+                </p>
+              </div>
+              <button
+                onClick={generateNewPlan}
+                className={`text-xs px-3 py-2 rounded-lg font-semibold transition-all ${
+                  dark ? "bg-dark-border text-gray-300 hover:bg-primary/30" : "bg-orange-100 text-primary hover:bg-orange-200"
+                }`}
+              >
+                🔄 Regenerate
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-xs">
+              <div className={`rounded-xl p-3 text-center ${bmiCat.color === "text-green-500" ? "bg-gradient-to-br from-green-400 to-green-500" : "bg-gradient-to-br from-blue-400 to-blue-500"} text-white`}>
+                <p className="text-xl font-bold">{bmi}</p>
+                <p className="text-[10px] opacity-90">BMI · {bmiCat.label}</p>
+              </div>
+              <div className="bg-gradient-to-br from-orange-400 to-orange-500 text-white rounded-xl p-3 text-center">
+                <p className="text-xl font-bold">{dailyTarget}</p>
+                <p className="text-[10px] opacity-90">kcal/day target</p>
+              </div>
+              <div className="bg-gradient-to-br from-purple-400 to-purple-500 text-white rounded-xl p-3 text-center">
+                <p className="text-xl font-bold">{lifestyleInfo?.icon}</p>
+                <p className="text-[10px] opacity-90">{profile.lifestyle}</p>
+              </div>
+              <div className="bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-xl p-3 text-center">
+                <p className="text-xl font-bold">{goalInfo?.icon}</p>
+                <p className="text-[10px] opacity-90">{goalInfo?.label}</p>
+              </div>
+            </div>
+
+            <div className={`rounded-xl p-3 ${dark ? "bg-dark-border" : "bg-orange-50"}`}>
+              <p className="text-xs font-semibold mb-2 opacity-70">Daily Macro Targets:</p>
+              <div className="grid grid-cols-3 gap-3 text-center text-xs">
+                <div>
+                  <p className="text-lg font-bold text-green-500">{macros.protein}g</p>
+                  <p className="text-[10px] opacity-50">Protein</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-blue-500">{macros.carbs}g</p>
+                  <p className="text-[10px] opacity-50">Carbs</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-pink-500">{macros.fat}g</p>
+                  <p className="text-[10px] opacity-50">Fat</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between mt-4 pt-3 border-t border-current/10">
+              <span className="text-sm font-medium">Prefer Vegetarian Meals</span>
+              <button
+                onClick={() => setPreferVeg(!preferVeg)}
+                className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
+                  preferVeg ? "bg-green-500" : "bg-gray-300"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 w-6 h-6 rounded-full bg-white transition-all duration-300 flex items-center justify-center text-sm ${
+                    preferVeg ? "left-7" : "left-0.5"
+                  }`}
+                >
+                  {preferVeg ? "🟢" : "🔴"}
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div className="glass-card p-4">
+            <h3 className="font-bold mb-3">📅 Weekly Overview</h3>
+            {plan && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 text-xs">
+                <div className={`rounded-lg p-2 text-center ${dark ? "bg-dark-border" : "bg-orange-50"}`}>
+                  <p className="text-lg font-bold text-primary">{plan.totalWeekCalories.toLocaleString()}</p>
+                  <p className="text-[10px] opacity-50">Total kcal/week</p>
+                </div>
+                <div className={`rounded-lg p-2 text-center ${dark ? "bg-dark-border" : "bg-orange-50"}`}>
+                  <p className="text-lg font-bold text-orange-500">{plan.avgDailyCalories}</p>
+                  <p className="text-[10px] opacity-50">Avg kcal/day</p>
+                </div>
+                <div className={`rounded-lg p-2 text-center ${dark ? "bg-dark-border" : "bg-purple-50"}`}>
+                  <p className="text-lg font-bold text-purple-500">{plan.totalExerciseMinutes}</p>
+                  <p className="text-[10px] opacity-50">Exercise min/week</p>
+                </div>
+                <div className={`rounded-lg p-2 text-center ${dark ? "bg-dark-border" : "bg-green-50"}`}>
+                  <p className="text-lg font-bold text-green-500">{Math.round(plan.totalExerciseMinutes / 7)}</p>
+                  <p className="text-[10px] opacity-50">Avg min/day</p>
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-1.5 overflow-x-auto pb-2">
+              {DAYS_SHORT.map((day, i) => (
+                <button
+                  key={i}
+                  onClick={() => setSelectedDay(i)}
+                  className={`flex-1 min-w-[50px] py-2 px-1 rounded-lg text-xs font-semibold transition-all ${
+                    i === selectedDay
+                      ? "tab-active"
+                      : dark
+                      ? "bg-[#282828] text-gray-400 hover:bg-[#141414]"
+                      : "bg-white/60 text-gray-500 hover:bg-orange-100"
+                  }`}
+                >
+                  <div>{day}</div>
+                  <div className="text-[9px] opacity-60 mt-0.5">{plan?.days[i]?.totalCalories || 0}kcal</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {dayPlan && (
+            <div className="space-y-3 fade-in">
+              <div className="glass-card p-4">
+                <h3 className="font-bold mb-2">{dayPlan.dayName}'s Complete Plan</h3>
+                <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                  <div className={`rounded-lg p-2 ${dark ? "bg-dark-border" : "bg-orange-50"}`}>
+                    <p className="font-bold text-primary">{dayPlan.totalCalories}</p>
+                    <p className="opacity-50 text-[10px]">kcal</p>
+                  </div>
+                  <div className={`rounded-lg p-2 ${dark ? "bg-dark-border" : "bg-green-50"}`}>
+                    <p className="font-bold text-green-500">{dayPlan.totalProtein}g</p>
+                    <p className="opacity-50 text-[10px]">protein</p>
+                  </div>
+                  <div className={`rounded-lg p-2 ${dark ? "bg-dark-border" : "bg-purple-50"}`}>
+                    <p className="font-bold text-purple-500">{dayPlan.exerciseMinutes}min</p>
+                    <p className="opacity-50 text-[10px]">exercise</p>
+                  </div>
+                  <div className={`rounded-lg p-2 ${dark ? "bg-dark-border" : "bg-red-50"}`}>
+                    <p className="font-bold text-red-500">-{dayPlan.caloriesBurned}</p>
+                    <p className="opacity-50 text-[10px]">burned</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass-card p-4">
+                <h4 className="font-semibold text-sm mb-3">🍽️ Meals for {dayPlan.dayName}</h4>
+                <div className="space-y-2">
+                  <div className={`flex items-center gap-3 p-3 rounded-xl ${dark ? "bg-dark-border/50" : "bg-orange-50"}`}>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl bg-orange-100 text-orange-600`}>
+                      🌅
+                    </div>
+                    <div className="flex-1 min-w-0 text-xs">
+                      <p className="font-semibold text-sm truncate">{dayPlan.meals.breakfast.isVeg ? "🟢" : "🔴"} {dayPlan.meals.breakfast.name}</p>
+                      <p className="opacity-50">Breakfast · 8:00 AM</p>
+                      <p className="opacity-70 mt-0.5">{dayPlan.meals.breakfast.calories} kcal · P:{dayPlan.meals.breakfast.protein}g · C:{dayPlan.meals.breakfast.carbs}g · F:{dayPlan.meals.breakfast.fat}g</p>
+                    </div>
+                  </div>
+
+                  {dayPlan.meals.snacks[0] && (
+                    <div className={`flex items-center gap-3 p-3 rounded-xl ${dark ? "bg-dark-border/30" : "bg-gray-50"}`}>
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl bg-orange-100 text-orange-600`}>
+                        ☕
+                      </div>
+                      <div className="flex-1 min-w-0 text-xs">
+                        <p className="font-semibold text-sm truncate">{dayPlan.meals.snacks[0].isVeg ? "🟢" : "🔴"} {dayPlan.meals.snacks[0].name}</p>
+                        <p className="opacity-50">Morning Snack · 11:00 AM</p>
+                        <p className="opacity-70 mt-0.5">{dayPlan.meals.snacks[0].calories} kcal · P:{dayPlan.meals.snacks[0].protein}g · C:{dayPlan.meals.snacks[0].carbs}g · F:{dayPlan.meals.snacks[0].fat}g</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={`flex items-center gap-3 p-3 rounded-xl ${dark ? "bg-dark-border/50" : "bg-orange-50"}`}>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl bg-orange-100 text-orange-600`}>
+                      ☀️
+                    </div>
+                    <div className="flex-1 min-w-0 text-xs">
+                      <p className="font-semibold text-sm truncate">{dayPlan.meals.lunch.isVeg ? "🟢" : "🔴"} {dayPlan.meals.lunch.name}</p>
+                      <p className="opacity-50">Lunch · 1:00 PM</p>
+                      <p className="opacity-70 mt-0.5">{dayPlan.meals.lunch.calories} kcal · P:{dayPlan.meals.lunch.protein}g · C:{dayPlan.meals.lunch.carbs}g · F:{dayPlan.meals.lunch.fat}g</p>
+                    </div>
+                  </div>
+
+                  {dayPlan.meals.snacks[1] && (
+                    <div className={`flex items-center gap-3 p-3 rounded-xl ${dark ? "bg-dark-border/30" : "bg-gray-50"}`}>
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl bg-orange-100 text-orange-600`}>
+                        🫖
+                      </div>
+                      <div className="flex-1 min-w-0 text-xs">
+                        <p className="font-semibold text-sm truncate">{dayPlan.meals.snacks[1].isVeg ? "🟢" : "🔴"} {dayPlan.meals.snacks[1].name}</p>
+                        <p className="opacity-50">Evening Snack · 5:00 PM</p>
+                        <p className="opacity-70 mt-0.5">{dayPlan.meals.snacks[1].calories} kcal · P:{dayPlan.meals.snacks[1].protein}g · C:{dayPlan.meals.snacks[1].carbs}g · F:{dayPlan.meals.snacks[1].fat}g</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className={`flex items-center gap-3 p-3 rounded-xl ${dark ? "bg-dark-border/50" : "bg-orange-50"}`}>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl bg-orange-100 text-orange-600`}>
+                      🌙
+                    </div>
+                    <div className="flex-1 min-w-0 text-xs">
+                      <p className="font-semibold text-sm truncate">{dayPlan.meals.dinner.isVeg ? "🟢" : "🔴"} {dayPlan.meals.dinner.name}</p>
+                      <p className="opacity-50">Dinner · 8:00 PM</p>
+                      <p className="opacity-70 mt-0.5">{dayPlan.meals.dinner.calories} kcal · P:{dayPlan.meals.dinner.protein}g · C:{dayPlan.meals.dinner.carbs}g · F:{dayPlan.meals.dinner.fat}g</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass-card p-4">
+                <h4 className="font-semibold text-sm mb-3">🏋️ Exercises for {dayPlan.dayName}</h4>
+                {dayPlan.exercises.length === 0 ? (
+                  <p className="text-sm opacity-50 text-center py-2">Rest day! Light stretching recommended.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {dayPlan.exercises.map((ex, i) => (
+                      <div
+                        key={i}
+                        className={`flex items-center gap-3 p-3 rounded-xl ${
+                          dark ? "bg-dark-border/50" : "bg-purple-50"
+                        }`}
+                      >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg ${
+                          dark ? "bg-purple-900/50" : "bg-purple-100"
+                        }`}>
+                          {CAT_ICONS[ex.category] || "🏋️"}
+                        </div>
+                        <div className="flex-1 text-xs">
+                          <p className="font-semibold text-sm">{ex.name}</p>
+                          <p className="opacity-50">
+                            {ex.durationMinutes} min · {ex.caloriesBurned} kcal · {ex.intensity} intensity
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {plan && (
+            <div className="glass-card p-4 text-center sm:text-left">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-sm">Apply this plan to your tracker?</p>
+                  <p className="text-xs opacity-50">This will add all meals & exercises for the week</p>
+                </div>
+                <button
+                  onClick={handleApply}
+                  disabled={applied}
+                  className={`py-3 px-6 rounded-xl font-semibold transition-all ${
+                    applied
+                      ? "bg-green-500 text-white"
+                      : "btn-accent"
+                  }`}
+                >
+                  {applied ? "✓ Applied!" : "Apply Plan"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function DietTab({ dark, dailyTarget, profile, meals, onAddMeal, onDeleteMeal }) {
+      const [showForm, setShowForm] = useState(false);
+      const [form, setForm] = useState({
+        dayOfWeek: new Date().getDay(),
+        mealType: "breakfast",
+        name: "",
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        isVeg: true,
+        notes: "",
+      });
+
+      const today = new Date().getDay();
+      const todayMeals = meals.filter((m) => m.dayOfWeek === today);
+      const totalCal = todayMeals.reduce((s, m) => s + m.calories, 0);
+      const totalProtein = todayMeals.reduce((s, m) => s + m.protein, 0);
+      const totalCarbs = todayMeals.reduce((s, m) => s + m.carbs, 0);
+      const totalFat = todayMeals.reduce((s, m) => s + m.fat, 0);
+
+      const macroTargets = calcMacroTargets(dailyTarget, profile.lifestyle, profile.goal);
+      const calPct = Math.min((totalCal / dailyTarget) * 100, 100);
+      const remaining = dailyTarget - totalCal;
+
+      const selectPopular = (meal) => {
+        setForm({
+          ...form,
+          name: meal.name,
+          calories: meal.calories,
+          protein: meal.protein,
+          carbs: meal.carbs,
+          fat: meal.fat,
+          isVeg: meal.isVeg,
+        });
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!form.name.trim()) return;
+        onAddMeal(form);
+        setForm({ ...form, name: "", calories: 0, protein: 0, carbs: 0, fat: 0, notes: "" });
+        setShowForm(false);
+      };
+
+      const MEAL_TYPES = ["breakfast", "lunch", "dinner", "snack"];
+      const MEAL_ICONS = { breakfast: "🌅", lunch: "☀️", dinner: "🌙", snack: "🍿" };
+      const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+      return (
+        <div className="space-y-4">
+          <div className="glass-card p-5">
+            <h2 className="text-lg font-bold mb-1 flex items-center gap-2">
+              🥗 Today's Nutrition Summary
+            </h2>
+            <p className="text-xs opacity-50 mb-3">
+              Target: {dailyTarget} kcal/day
+            </p>
+
+            <div className="mb-4 text-xs">
+              <div className="flex justify-between text-xs mb-1">
+                <span className="font-semibold">{totalCal} / {dailyTarget} kcal</span>
+                <span className={`font-semibold ${remaining < 0 ? "text-red-500" : "text-accent"}`}>
+                  {remaining > 0 ? `${remaining} remaining` : `${Math.abs(remaining)} over!`}
+                </span>
+              </div>
+              <div className={`w-full h-4 rounded-full overflow-hidden ${dark ? "bg-dark-border" : "bg-gray-100"}`}>
+                <div
+                  className={`h-full rounded-full transition-all duration-700 flex items-center justify-end pr-1 ${
+                    calPct > 100
+                      ? "bg-gradient-to-r from-red-400 to-red-500"
+                      : calPct > 85
+                      ? "bg-gradient-to-r from-yellow-400 to-orange-400"
+                      : "bg-gradient-to-r from-green-400 to-accent"
+                  }`}
+                  style={{ width: `${calPct}%` }}
+                >
+                  {calPct > 15 && (
+                    <span className="text-[9px] text-white font-bold">{Math.round(calPct)}%</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-white text-xs">
+              <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{totalCal}</p>
+                <p className="text-[10px] opacity-90">/ {dailyTarget} kcal Calories</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{totalProtein}g</p>
+                <p className="text-[10px] opacity-90">/ {macroTargets.protein}g Protein</p>
+              </div>
+              <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{totalCarbs}g</p>
+                <p className="text-[10px] opacity-90">/ {macroTargets.carbs}g Carbs</p>
+              </div>
+              <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{totalFat}g</p>
+                <p className="text-[10px] opacity-90">/ {macroTargets.fat}g Fat</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold">Today's Meals</h2>
+            <button onClick={() => setShowForm(!showForm)} className="btn-primary text-xs">
+              {showForm ? "✕ Close" : "+ Add Meal"}
+            </button>
+          </div>
+
+          {showForm && (
+            <form onSubmit={handleSubmit} className="glass-card p-5 space-y-4 fade-in">
+              <h3 className="font-semibold text-sm mb-2">Quick Pick Indian Meals:</h3>
+              <div className="flex gap-2 flex-wrap">
+                {POPULAR_MEALS.map((m) => (
+                  <button
+                    key={m.name}
+                    type="button"
+                    onClick={() => selectPopular(m)}
+                    className={`text-xs px-3 py-1.5 rounded-full transition-all ${
+                      form.name === m.name
+                        ? "bg-primary text-white"
+                        : dark
+                        ? "bg-[#282828] text-gray-300 hover:bg-primary/30"
+                        : "bg-orange-100 text-gray-700 hover:bg-orange-200"
+                    }`}
+                  >
+                    {m.isVeg ? "🟢" : "🔴"} {m.name}
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="text-xs font-medium opacity-70">Day</label>
+                  <select
+                    value={form.dayOfWeek}
+                    onChange={(e) => setForm({ ...form, dayOfWeek: parseInt(e.target.value) })}
+                    className="input-field mt-1"
+                  >
+                    {DAYS.map((d, i) => (
+                      <option key={d} value={i}>{d}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-medium opacity-70">Meal Type</label>
+                  <select
+                    value={form.mealType}
+                    onChange={(e) => setForm({ ...form, mealType: e.target.value })}
+                    className="input-field mt-1"
+                  >
+                    {MEAL_TYPES.map((t) => (
+                      <option key={t} value={t}>{MEAL_ICONS[t]} {t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium opacity-70">Meal Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Poha, Dal Chawal..."
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="input-field mt-1"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-4 gap-2 text-xs">
+                <div>
+                  <label className="opacity-70">Calories</label>
+                  <input
+                    type="number"
+                    value={form.calories}
+                    onChange={(e) => setForm({ ...form, calories: parseInt(e.target.value) || 0 })}
+                    className="input-field mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="opacity-70">Protein (g)</label>
+                  <input
+                    type="number"
+                    value={form.protein}
+                    onChange={(e) => setForm({ ...form, protein: parseInt(e.target.value) || 0 })}
+                    className="input-field mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="opacity-70">Carbs (g)</label>
+                  <input
+                    type="number"
+                    value={form.carbs}
+                    onChange={(e) => setForm({ ...form, carbs: parseInt(e.target.value) || 0 })}
+                    className="input-field mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="opacity-70">Fat (g)</label>
+                  <input
+                    type="number"
+                    value={form.fat}
+                    onChange={(e) => setForm({ ...form, fat: parseInt(e.target.value) || 0 })}
+                    className="input-field mt-1"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer text-sm">
+                  <input
+                    type="checkbox"
+                    checked={form.isVeg}
+                    onChange={(e) => setForm({ ...form, isVeg: e.target.checked })}
+                    className="w-4 h-4 accent-green-500"
+                  />
+                  {form.isVeg ? "🟢 Vegetarian" : "🔴 Non-Vegetarian"}
+                </label>
+              </div>
+
+              <input
+                type="text"
+                placeholder="Notes (optional)"
+                value={form.notes}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                className="input-field"
+              />
+
+              <button type="submit" className="btn-accent w-full py-3 text-sm">
+                ✅ Add Meal
+              </button>
+            </form>
+          )}
+
+          {todayMeals.length === 0 ? (
+            <div className="glass-card p-8 text-center opacity-60">
+              <p className="text-4xl mb-3">🍽️</p>
+              <p>No meals logged for today. Start by adding your first meal!</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {MEAL_TYPES.map((type) => {
+                const typeMeals = todayMeals.filter((m) => m.mealType === type);
+                if (typeMeals.length === 0) return null;
+                return (
+                  <div key={type}>
+                    <h3 className="text-sm font-semibold opacity-60 mb-2 uppercase tracking-wide">
+                      {MEAL_ICONS[type]} {type}
+                    </h3>
+                    {typeMeals.map((meal) => (
+                      <div key={meal.id} className={`glass-card meal-card p-4 mb-2 ${!meal.isVeg ? "!border-l-red-400" : "!border-l-green-400"}`}>
+                        <div className="flex items-center justify-between text-xs">
+                          <div>
+                            <p className="font-semibold text-sm flex items-center gap-2">
+                              {meal.isVeg ? "🟢" : "🔴"} {meal.name}
+                            </p>
+                            <p className="opacity-60 mt-1">
+                              {meal.calories} kcal · {meal.protein}g protein · {meal.carbs}g carbs · {meal.fat}g fat
+                            </p>
+                            {meal.notes && <p className="opacity-50 mt-1 italic">{meal.notes}</p>}
+                          </div>
+                          <button onClick={() => onDeleteMeal(meal.id)} className="btn-danger">
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function ExerciseTab({ dark, profile, exercises, onAddExercise, onToggleCompleteExercise, onDeleteExercise }) {
+      const [showForm, setShowForm] = useState(false);
+      const [form, setForm] = useState({
+        name: "",
+        category: "cardio",
+        durationMinutes: 30,
+        caloriesBurned: 0,
+        dayOfWeek: new Date().getDay(),
+      });
+
+      const today = new Date().getDay();
+      const todayExercises = exercises.filter((e) => e.dayOfWeek === today);
+      const totalBurned = todayExercises.reduce((s, e) => s + e.caloriesBurned, 0);
+      const totalMinutes = todayExercises.reduce((s, e) => s + e.durationMinutes, 0);
+      const completedCount = todayExercises.filter((e) => e.completed).length;
+
+      const targetMinutes = EXERCISE_TARGETS[profile.lifestyle] || 45;
+      const minutesPct = Math.min((totalMinutes / targetMinutes) * 100, 100);
+      const recommended = LIFESTYLE_RECS[profile.lifestyle] || LIFESTYLE_RECS.normal;
+
+      const selectPopular = (ex) => {
+        setForm({
+          ...form,
+          name: ex.name,
+          category: ex.category,
+          durationMinutes: ex.durationMinutes,
+          caloriesBurned: ex.caloriesBurned,
+        });
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!form.name.trim()) return;
+        onAddExercise(form);
+        setForm({ ...form, name: "", caloriesBurned: 0, durationMinutes: 30 });
+        setShowForm(false);
+      };
+
+      const CATEGORIES = ["cardio", "strength", "yoga", "sports"];
+      const CAT_ICONS = { cardio: "🏃", strength: "💪", yoga: "🧘", sports: "⚽" };
+      const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+      return (
+        <div className="space-y-4">
+          <div className="glass-card p-5">
+            <h2 className="text-lg font-bold mb-1 flex items-center gap-2">🏋️ Today's Exercise Summary</h2>
+            <p className="text-xs opacity-50 mb-3">
+              Target: {targetMinutes} min/day
+            </p>
+
+            <div className="mb-4 text-xs">
+              <div className="flex justify-between text-xs mb-1">
+                <span className="font-semibold">{totalMinutes} / {targetMinutes} min</span>
+                <span className={`font-semibold ${totalMinutes >= targetMinutes ? "text-accent" : "text-primary"}`}>
+                  {totalMinutes >= targetMinutes ? "🎉 Goal reached!" : `${targetMinutes - totalMinutes} min to go`}
+                </span>
+              </div>
+              <div className={`w-full h-3 rounded-full overflow-hidden ${dark ? "bg-dark-border" : "bg-gray-100"}`}>
+                <div
+                  className={`h-full rounded-full transition-all duration-700 ${
+                    minutesPct >= 100
+                      ? "bg-gradient-to-r from-green-400 to-accent"
+                      : "bg-gradient-to-r from-purple-400 to-purple-500"
+                  }`}
+                  style={{ width: `${minutesPct}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 text-white text-xs">
+              <div className="bg-gradient-to-br from-purple-400 to-purple-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{totalMinutes}</p>
+                <p className="text-[10px] opacity-90">min Active</p>
+              </div>
+              <div className="bg-gradient-to-br from-red-400 to-red-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{totalBurned}</p>
+                <p className="text-[10px] opacity-90">kcal Burned</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{completedCount}/{todayExercises.length}</p>
+                <p className="text-[10px] opacity-90">Completed</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold">Today's Exercises</h2>
+            <button onClick={() => setShowForm(!showForm)} className="btn-primary text-xs">
+              {showForm ? "✕ Close" : "+ Add Exercise"}
+            </button>
+          </div>
+
+          {showForm && (
+            <form onSubmit={handleSubmit} className="glass-card p-5 space-y-4 fade-in">
+              <h3 className="font-semibold text-sm mb-2">Quick Pick Exercises:</h3>
+              <div className="flex gap-2 flex-wrap">
+                {POPULAR_EXERCISES.map((ex) => {
+                  const isRecommended = recommended.includes(ex.name);
+                  return (
+                    <button
+                      key={ex.name}
+                      type="button"
+                      onClick={() => selectPopular(ex)}
+                      className={`text-xs px-3 py-1.5 rounded-full transition-all ${
+                        form.name === ex.name
+                          ? "bg-primary text-white"
+                          : isRecommended
+                          ? dark
+                            ? "bg-purple-900/40 text-purple-300 hover:bg-primary/30 ring-1 ring-purple-500/30"
+                            : "bg-purple-100 text-purple-700 hover:bg-purple-200 ring-1 ring-purple-355"
+                          : dark
+                          ? "bg-[#282828] text-gray-300 hover:bg-primary/30"
+                          : "bg-orange-100 text-gray-700 hover:bg-orange-200"
+                      }`}
+                    >
+                      {CAT_ICONS[ex.category]} {ex.name}
+                      {isRecommended && " ⭐"}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="opacity-70">Day</label>
+                  <select
+                    value={form.dayOfWeek}
+                    onChange={(e) => setForm({ ...form, dayOfWeek: parseInt(e.target.value) })}
+                    className="input-field mt-1"
+                  >
+                    {DAYS.map((d, i) => (
+                      <option key={d} value={i}>{d}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="opacity-70">Category</label>
+                  <select
+                    value={form.category}
+                    onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    className="input-field mt-1"
+                  >
+                    {CATEGORIES.map((c) => (
+                      <option key={c} value={c}>{CAT_ICONS[c]} {c.charAt(0).toUpperCase() + c.slice(1)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium opacity-70">Exercise Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Morning Walk, Surya Namaskar..."
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="input-field mt-1"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="opacity-70">Duration (min)</label>
+                  <input
+                    type="number"
+                    value={form.durationMinutes}
+                    onChange={(e) => setForm({ ...form, durationMinutes: parseInt(e.target.value) || 0 })}
+                    className="input-field mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="opacity-70">Calories Burned</label>
+                  <input
+                    type="number"
+                    value={form.caloriesBurned}
+                    onChange={(e) => setForm({ ...form, caloriesBurned: parseInt(e.target.value) || 0 })}
+                    className="input-field mt-1"
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="btn-accent w-full py-3 text-sm">
+                ✅ Add Exercise
+              </button>
+            </form>
+          )}
+
+          {todayExercises.length === 0 ? (
+            <div className="glass-card p-8 text-center opacity-60">
+              <p className="text-4xl mb-3">🏋️</p>
+              <p>No exercises for today. Start moving!</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {CATEGORIES.map((cat) => {
+                const catExercises = todayExercises.filter((e) => e.category === cat);
+                if (catExercises.length === 0) return null;
+                return (
+                  <div key={cat}>
+                    <h3 className="text-sm font-semibold opacity-60 mb-2 uppercase tracking-wide">
+                      {CAT_ICONS[cat]} {cat}
+                    </h3>
+                    {catExercises.map((ex) => (
+                      <div
+                        key={ex.id}
+                        className={`glass-card meal-card p-4 mb-2 transition-all ${
+                          ex.completed ? "opacity-60 !border-l-green-400" : "!border-l-purple-400"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => onToggleCompleteExercise(ex.id)}
+                              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs transition-all ${
+                                ex.completed
+                                  ? "bg-green-500 border-green-500 text-white"
+                                  : "border-gray-300 hover:border-primary"
+                              }`}
+                            >
+                              {ex.completed ? "✓" : ""}
+                            </button>
+                            <div>
+                              <p className={`font-semibold text-sm ${ex.completed ? "line-through" : ""}`}>
+                                {ex.name}
+                              </p>
+                              <p className="opacity-60 mt-1">
+                                {ex.durationMinutes} min · {ex.caloriesBurned} kcal burned
+                              </p>
+                            </div>
+                          </div>
+                          <button onClick={() => onDeleteExercise(ex.id)} className="btn-danger">
+                            🗑️
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function RemindersTab({ dark, reminders, onAddReminder, onToggleReminder, onDeleteReminder }) {
+      const [showForm, setShowForm] = useState(false);
+      const [form, setForm] = useState({
+        title: "",
+        description: "",
+        time: "08:00",
+        type: "meal",
+      });
+
+      const activeCount = reminders.filter((r) => r.isActive).length;
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!form.title.trim()) return;
+        onAddReminder(form);
+        setForm({ title: "", description: "", time: "08:00", type: "meal" });
+        setShowForm(false);
+      };
+
+      const REMINDER_TYPES = ["meal", "exercise", "water", "medicine"];
+      const TYPE_ICONS = { meal: "🍽️", exercise: "🏋️", water: "💧", medicine: "💊" };
+
+      return (
+        <div className="space-y-4">
+          <div className="glass-card p-5">
+            <h2 className="text-lg font-bold mb-3 flex items-center gap-2">⏰ Reminders Overview</h2>
+            <div className="grid grid-cols-2 gap-3 text-xs text-white">
+              <div className="bg-gradient-to-br from-amber-400 to-amber-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{reminders.length}</p>
+                <p className="text-[10px] opacity-90">Total Reminders</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-xl p-3 text-center">
+                <p className="text-2xl font-bold">{activeCount}</p>
+                <p className="text-[10px] opacity-90">Active</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-bold">All Reminders</h2>
+            <button onClick={() => setShowForm(!showForm)} className="btn-primary text-xs">
+              {showForm ? "✕ Close" : "+ Add Reminder"}
+            </button>
+          </div>
+
+          {showForm && (
+            <form onSubmit={handleSubmit} className="glass-card p-5 space-y-4 fade-in">
+              <div>
+                <label className="text-xs font-medium opacity-70">Title</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Breakfast time, Take vitamins..."
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  className="input-field mt-1"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium opacity-70">Description (optional)</label>
+                <input
+                  type="text"
+                  placeholder="Additional details..."
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  className="input-field mt-1"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="opacity-70">Time</label>
+                  <input
+                    type="time"
+                    value={form.time}
+                    onChange={(e) => setForm({ ...form, time: e.target.value })}
+                    className="input-field mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="opacity-70">Type</label>
+                  <select
+                    value={form.type}
+                    onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    className="input-field mt-1"
+                  >
+                    {REMINDER_TYPES.map((t) => (
+                      <option key={t} value={t}>{TYPE_ICONS[t]} {t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" className="btn-accent w-full py-3 text-sm">
+                ✅ Add Reminder
+              </button>
+            </form>
+          )}
+
+          {reminders.length === 0 ? (
+            <div className="glass-card p-8 text-center opacity-60">
+              <p className="text-4xl mb-3">⏰</p>
+              <p>No reminders set. Create one to stay on track!</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {reminders.map((rem) => (
+                <div
+                  key={rem.id}
+                  className={`glass-card meal-card p-4 ${!rem.isActive ? "opacity-50" : ""}`}
+                  style={{
+                    borderLeftColor:
+                      rem.type === "meal" ? "#f97316" :
+                      rem.type === "exercise" ? "#a855f7" :
+                      rem.type === "water" ? "#3b82f6" :
+                      "#ef4444"
+                  }}
+                >
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => onToggleReminder(rem.id)}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all ${
+                          rem.isActive
+                            ? "bg-gradient-to-br from-primary to-[#f39c12] text-white shadow-md"
+                            : dark
+                            ? "bg-dark-border text-gray-500"
+                            : "bg-gray-200 text-gray-400"
+                        }`}
+                      >
+                        {TYPE_ICONS[rem.type] || "📌"}
+                      </button>
+                      <div>
+                        <p className={`font-semibold text-sm ${!rem.isActive ? "line-through" : ""}`}>
+                          {rem.title}
+                        </p>
+                        {rem.description && <p className="opacity-60">{rem.description}</p>}
+                        <p className="mt-1 font-mono opacity-70">
+                          🕐 {rem.time}
+                          <span className={`ml-2 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                            rem.isActive
+                              ? "bg-green-100 text-green-700"
+                              : "bg-gray-100 text-gray-500"
+                          }`}>
+                            {rem.isActive ? "ACTIVE" : "OFF"}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                    <button onClick={() => onDeleteReminder(rem.id)} className="btn-danger">
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function WeeklyPlannerTab({ dark, dailyTarget, profile, meals, exercises }) {
+      const [selectedDay, setSelectedDay] = useState(new Date().getDay());
+
+      const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const SHORT_DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      
+      const weeklyCalories = DAYS.map((_, i) =>
+        meals.filter((m) => m.dayOfWeek === i).reduce((s, m) => s + m.calories, 0)
+      );
+      const weeklyExerciseMin = DAYS.map((_, i) =>
+        exercises.filter((e) => e.dayOfWeek === i).reduce((s, e) => s + e.durationMinutes, 0)
+      );
+
+      const totalWeekCal = weeklyCalories.reduce((a, b) => a + b, 0);
+      const totalWeekExMin = weeklyExerciseMin.reduce((a, b) => a + b, 0);
+      const maxCal = Math.max(...weeklyCalories, 1);
+      const exTarget = EXERCISE_TARGETS[profile.lifestyle] || 45;
+      const macroTargets = calcMacroTargets(dailyTarget, profile.lifestyle, profile.goal);
+
+      const daysHittingTarget = weeklyCalories.filter(
+        (cal) => cal > 0 && cal <= dailyTarget * 1.1
+      ).length;
+
+      const dayMeals = meals.filter((m) => m.dayOfWeek === selectedDay);
+      const dayExercises = exercises.filter((e) => e.dayOfWeek === selectedDay);
+      
+      const dayCal = dayMeals.reduce((s, m) => s + m.calories, 0);
+      const dayProtein = dayMeals.reduce((s, m) => s + m.protein, 0);
+      const dayCarbs = dayMeals.reduce((s, m) => s + m.carbs, 0);
+      const dayFat = dayMeals.reduce((s, m) => s + m.fat, 0);
+      const dayBurned = dayExercises.reduce((s, e) => s + e.caloriesBurned, 0);
+      const dayExMin = dayExercises.reduce((s, e) => s + e.durationMinutes, 0);
+
+      const MEAL_ICONS = { breakfast: "🌅", lunch: "☀️", dinner: "🌙", snack: "🍿" };
+      const CAT_ICONS = { cardio: "🏃", strength: "💪", yoga: "🧘", sports: "⚽" };
+
+      return (
+        <div className="space-y-4">
+          <div className="glass-card p-5">
+            <h2 className="text-lg font-bold mb-1 flex items-center gap-2">📅 Weekly Overview</h2>
+            <p className="text-xs opacity-50 mb-3">
+              Target: {dailyTarget} kcal/day · {exTarget} min exercise/day
+            </p>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-xs text-white">
+              <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl p-3 text-center">
+                <p className="text-xl font-bold">{totalWeekCal.toLocaleString()}</p>
+                <p className="text-[10px] opacity-90">Total kcal (week)</p>
+              </div>
+              <div className="bg-gradient-to-br from-purple-400 to-purple-500 rounded-xl p-3 text-center">
+                <p className="text-xl font-bold">{totalWeekExMin}</p>
+                <p className="text-[10px] opacity-90">Exercise min (week)</p>
+              </div>
+              <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-xl p-3 text-center">
+                <p className="text-xl font-bold">{daysHittingTarget}/7</p>
+                <p className="text-[10px] opacity-90">Days on target</p>
+              </div>
+              <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl p-3 text-center">
+                <p className="text-xl font-bold">{Math.round(totalWeekCal / 7)}</p>
+                <p className="text-[10px] opacity-90">Avg kcal/day</p>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="flex items-end gap-1.5 h-24 mt-2">
+                {weeklyCalories.map((cal, i) => {
+                  const isOver = cal > dailyTarget;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                      <div
+                        className={`w-full rounded-t-md transition-all duration-500 ${
+                          i === selectedDay
+                            ? "bg-gradient-to-t from-blue to-blue/70"
+                            : isOver
+                            ? "bg-gradient-to-t from-red-400 to-red-300"
+                            : dark
+                            ? "bg-[#282828]"
+                            : "bg-orange-200"
+                        }`}
+                        style={{ height: `${Math.max((cal / maxCal) * 100, 4)}%` }}
+                      />
+                      <span className="text-[10px] font-semibold opacity-50">
+                        {SHORT_DAYS[i]}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <p className="text-xs text-center mt-3 opacity-50">Daily calorie intake (kcal) — red = over target</p>
+          </div>
+
+          <div className="flex gap-1.5 overflow-x-auto pb-1">
+            {DAYS.map((day, i) => {
+              const dayCals = weeklyCalories[i];
+              const isOver = dayCals > dailyTarget;
+              return (
+                <button
+                  key={day}
+                  onClick={() => setSelectedDay(i)}
+                  className={`flex-1 min-w-[50px] py-2 px-1 rounded-lg text-xs font-semibold transition-all ${
+                    i === selectedDay
+                      ? "tab-active"
+                      : dark
+                      ? "bg-dark-card text-gray-400"
+                      : "bg-white/60 text-gray-500"
+                  }`}
+                >
+                  <div>{SHORT_DAYS[i]}</div>
+                  {isOver && i !== selectedDay && <div className="text-[8px] text-red-400">⚠️</div>}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="space-y-4 fade-in">
+            <div className="glass-card p-4">
+              <h3 className="font-bold mb-1">{DAYS[selectedDay]}'s Plan</h3>
+              <p className="text-xs opacity-60 mb-3">
+                {dayCal} / {dailyTarget} kcal intake · {dayBurned} kcal burned · Net: {dayCal - dayBurned} kcal
+              </p>
+
+              <div className={`h-3 rounded-full overflow-hidden ${dark ? "bg-dark-border" : "bg-gray-100"}`}>
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    dayCal > dailyTarget
+                      ? "bg-gradient-to-r from-red-400 to-red-500"
+                      : "bg-gradient-to-r from-green-400 to-accent"
+                  }`}
+                  style={{ width: `${Math.min((dayCal / dailyTarget) * 100, 100)}%` }}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 mt-4 text-xs">
+                <div className={`rounded-lg p-2 text-center ${dark ? "bg-dark-border" : "bg-green-50"}`}>
+                  <p className="font-bold text-green-500">{dayProtein}g</p>
+                  <p className="opacity-50 text-[10px]">/ {macroTargets.protein}g protein</p>
+                </div>
+                <div className={`rounded-lg p-2 text-center ${dark ? "bg-dark-border" : "bg-blue-50"}`}>
+                  <p className="font-bold text-blue">{dayCarbs}g</p>
+                  <p className="opacity-50 text-[10px]">/ {macroTargets.carbs}g carbs</p>
+                </div>
+                <div className={`rounded-lg p-2 text-center ${dark ? "bg-dark-border" : "bg-pink-50"}`}>
+                  <p className="font-bold text-pink">{dayFat}g</p>
+                  <p className="opacity-50 text-[10px]">/ {macroTargets.fat}g fat</p>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="opacity-60">Exercise: {dayExMin} / {exTarget} min</span>
+                  <span className={dayExMin >= exTarget ? "text-accent font-semibold" : "text-primary"}>
+                    {dayExMin >= exTarget ? "✓ Done!" : `${exTarget - dayExMin} min more`}
+                  </span>
+                </div>
+                <div className={`h-2 rounded-full overflow-hidden ${dark ? "bg-dark-border" : "bg-gray-100"}`}>
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      dayExMin >= exTarget
+                        ? "bg-gradient-to-r from-green-400 to-accent"
+                        : "bg-gradient-to-r from-purple-400 to-purple-500"
+                    }`}
+                    style={{ width: `${Math.min((dayExMin / exTarget) * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-card p-4">
+              <h3 className="font-semibold text-sm mb-3">🥗 Meals</h3>
+              {dayMeals.length === 0 ? (
+                <p className="text-sm opacity-50 text-center py-4">No meals planned for {DAYS[selectedDay]}</p>
+              ) : (
+                <div className="space-y-2">
+                  {dayMeals.map((meal) => (
+                    <div
+                      key={meal.id}
+                      className={`flex items-center gap-3 p-2.5 rounded-lg text-xs ${
+                        dark ? "bg-dark-border/50" : "bg-orange-50"
+                      }`}
+                    >
+                      <span className="text-lg">{MEAL_ICONS[meal.mealType] || "🍽️"}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {meal.isVeg ? "🟢" : "🔴"} {meal.name}
+                        </p>
+                        <p className="opacity-50">{meal.calories} kcal · {meal.mealType}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="glass-card p-4">
+              <h3 className="font-semibold text-sm mb-3">🏋️ Exercises</h3>
+              {dayExercises.length === 0 ? (
+                <p className="text-sm opacity-50 text-center py-4">No exercises planned for {DAYS[selectedDay]}</p>
+              ) : (
+                <div className="space-y-2">
+                  {dayExercises.map((ex) => (
+                    <div
+                      key={ex.id}
+                      className={`flex items-center gap-3 p-2.5 rounded-lg text-xs ${
+                        dark ? "bg-dark-border/50" : "bg-purple-50"
+                      } ${ex.completed ? "opacity-60" : ""}`}
+                    >
+                      <span className="text-lg">{CAT_ICONS[ex.category] || "🏋️"}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className={`font-medium text-sm truncate ${ex.completed ? "line-through" : ""}`}>
+                          {ex.name}
+                        </p>
+                        <p className="opacity-50">{ex.durationMinutes} min · {ex.caloriesBurned} kcal</p>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        ex.completed ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"
+                      }`}>
+                        {ex.completed ? "✓ Done" : "Pending"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ==========================================
+    // MAIN APP COMPONENT
+    // ==========================================
+
+    function SmartMealApp() {
+      const [activeTab, setActiveTab] = useState("activity");
+      const [dark, setDark] = useState(false);
+      const [profile, setProfile] = useState(null);
+      const [meals, setMeals] = useState([]);
+      const [exercises, setExercises] = useState([]);
+      const [water, setWater] = useState({});
+      const [tasks, setTasks] = useState([]);
+      const [reminders, setReminders] = useState([]);
+      const [health, setHealth] = useState({
+        steps: 0,
+        stepsGoal: 10000,
+        caloriesBurned: 0,
+        caloriesGoal: 500,
+        activeMinutes: 0,
+        activeMinutesGoal: 30,
+        heartRateAvg: 0,
+        heartRateMin: 0,
+        heartRateMax: 0,
+        sleepHours: 0,
+        sleepGoal: 8,
+        distance: 0,
+        floorsClimbed: 0,
+        source: "none",
+      });
+
+      // Synchronize dark mode class
+      useEffect(() => {
+        if (dark) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      }, [dark]);
+
+      // Load data from LocalStorage
+      useEffect(() => {
+        try {
+          const storedProfile = localStorage.getItem("profile");
+          if (storedProfile) setProfile(JSON.parse(storedProfile));
+
+          const storedMeals = localStorage.getItem("meals");
+          if (storedMeals) setMeals(JSON.parse(storedMeals));
+
+          const storedExercises = localStorage.getItem("exercises");
+          if (storedExercises) setExercises(JSON.parse(storedExercises));
+
+          const storedWater = localStorage.getItem("water");
+          if (storedWater) setWater(JSON.parse(storedWater));
+
+          const storedTasks = localStorage.getItem("tasks");
+          if (storedTasks) setTasks(JSON.parse(storedTasks));
+
+          const storedReminders = localStorage.getItem("reminders");
+          if (storedReminders) {
+            setReminders(JSON.parse(storedReminders));
+          } else {
+            const initialReminders = [
+              { id: 1, title: "Morning Water Intake", description: "Keep hydrated!", time: "08:00", type: "water", isActive: true },
+              { id: 2, title: "Healthy Lunch", description: "Remember to eat your greens", time: "13:00", type: "meal", isActive: true },
+              { id: 3, title: "Desk Stretching", description: "Quick stretch break", time: "16:00", type: "exercise", isActive: true },
+            ];
+            localStorage.setItem("reminders", JSON.stringify(initialReminders));
+            setReminders(initialReminders);
+          }
+
+          const storedHealth = localStorage.getItem("health-data");
+          if (storedHealth) setHealth(JSON.parse(storedHealth));
+        } catch (e) {
+          console.error("Failed to load local storage data", e);
+        }
+      }, []);
+
+      // Helpers to save data
+      const saveProfile = (updatedProfile) => {
+        setProfile(updatedProfile);
+        localStorage.setItem("profile", JSON.stringify(updatedProfile));
+      };
+
+      const saveMeals = (updatedMeals) => {
+        setMeals(updatedMeals);
+        localStorage.setItem("meals", JSON.stringify(updatedMeals));
+      };
+
+      const saveExercises = (updatedExercises) => {
+        setExercises(updatedExercises);
+        localStorage.setItem("exercises", JSON.stringify(updatedExercises));
+      };
+
+      const saveWater = (date, glasses) => {
+        const updated = { ...water, [date]: glasses };
+        setWater(updated);
+        localStorage.setItem("water", JSON.stringify(updated));
+
+        // Update task progress for water
+        const updatedTasks = tasks.map(t => {
+          if (t.category === "water") {
+            const isCompleted = glasses >= t.targetValue;
+            return { ...t, currentValue: glasses, isCompleted };
+          }
+          return t;
+        });
+        setTasks(updatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      };
+
+      // Simulated sync
+      const handleSyncApp = (appId) => {
+        const progressFactor = Math.min(new Date().getHours() / 18, 1);
+        const baseSteps = 8000 + Math.floor(Math.random() * 6000);
+        
+        const simulatedData = {
+          steps: Math.floor(baseSteps * progressFactor),
+          stepsGoal: 10000,
+          caloriesBurned: Math.floor((300 + Math.random() * 400) * progressFactor),
+          caloriesGoal: 500,
+          activeMinutes: Math.floor((30 + Math.random() * 60) * progressFactor),
+          activeMinutesGoal: 30,
+          heartRateAvg: 68 + Math.floor(Math.random() * 20),
+          heartRateMin: 55 + Math.floor(Math.random() * 10),
+          heartRateMax: 90 + Math.floor(Math.random() * 40),
+          sleepHours: 6 + Math.random() * 3,
+          sleepGoal: 8,
+          distance: parseFloat(((baseSteps * progressFactor) / 1400).toFixed(2)),
+          floorsClimbed: Math.floor((5 + Math.random() * 15) * progressFactor),
+          source: appId,
+        };
+
+        setHealth(simulatedData);
+        localStorage.setItem("health-data", JSON.stringify(simulatedData));
+
+        if (profile) {
+          saveProfile({ ...profile, healthAppConnected: appId });
+        }
+
+        // Update steps task progress
+        const updatedTasks = tasks.map(t => {
+          if (t.category === "steps") {
+            const isCompleted = simulatedData.steps >= t.targetValue;
+            return { ...t, currentValue: simulatedData.steps, isCompleted };
+          }
+          if (t.category === "exercise") {
+            const isCompleted = simulatedData.activeMinutes >= t.targetValue;
+            return { ...t, currentValue: simulatedData.activeMinutes, isCompleted };
+          }
+          return t;
+        });
+        setTasks(updatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      };
+
+      const handleDisconnectApp = () => {
+        const disconnected = {
+          ...health,
+          steps: 0,
+          caloriesBurned: 0,
+          activeMinutes: 0,
+          source: "none",
+        };
+        setHealth(disconnected);
+        localStorage.setItem("health-data", JSON.stringify(disconnected));
+
+        if (profile) {
+          saveProfile({ ...profile, healthAppConnected: "" });
+        }
+      };
+
+      const handleAddManualSteps = (steps) => {
+        const updatedSteps = (health.steps || 0) + steps;
+        const updated = {
+          ...health,
+          steps: updatedSteps,
+          distance: parseFloat((updatedSteps / 1400).toFixed(2)),
+          source: "manual",
+        };
+        setHealth(updated);
+        localStorage.setItem("health-data", JSON.stringify(updated));
+
+        // Update task progress
+        const updatedTasks = tasks.map(t => {
+          if (t.category === "steps") {
+            const isCompleted = updatedSteps >= t.targetValue;
+            return { ...t, currentValue: updatedSteps, isCompleted };
+          }
+          return t;
+        });
+        setTasks(updatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      };
+
+      // Local API replacement handlers
+      const handleAddMeal = (mealForm) => {
+        const newMeal = {
+          id: Date.now(),
+          ...mealForm,
+        };
+        const updated = [...meals, newMeal];
+        saveMeals(updated);
+
+        // Update log meal task progress
+        const today = new Date().getDay();
+        const todayCount = updated.filter(m => m.dayOfWeek === today).length;
+        const updatedTasks = tasks.map(t => {
+          if (t.category === "meals") {
+            const isCompleted = todayCount >= t.targetValue;
+            return { ...t, currentValue: todayCount, isCompleted };
+          }
+          return t;
+        });
+        setTasks(updatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      };
+
+      const handleDeleteMeal = (id) => {
+        const updated = meals.filter(m => m.id !== id);
+        saveMeals(updated);
+
+        const today = new Date().getDay();
+        const todayCount = updated.filter(m => m.dayOfWeek === today).length;
+        const updatedTasks = tasks.map(t => {
+          if (t.category === "meals") {
+            const isCompleted = todayCount >= t.targetValue;
+            return { ...t, currentValue: todayCount, isCompleted };
+          }
+          return t;
+        });
+        setTasks(updatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      };
+
+      const handleAddExercise = (exForm) => {
+        const newEx = {
+          id: Date.now(),
+          completed: false,
+          ...exForm,
+        };
+        const updated = [...exercises, newEx];
+        saveExercises(updated);
+      };
+
+      const handleToggleCompleteExercise = (id) => {
+        const updated = exercises.map(e => e.id === id ? { ...e, completed: !e.completed } : e);
+        saveExercises(updated);
+
+        // Update task progress if exercise complete
+        const today = new Date().getDay();
+        const totalMinutes = updated.filter(e => e.dayOfWeek === today && e.completed).reduce((s, e) => s + e.durationMinutes, 0);
+        const updatedTasks = tasks.map(t => {
+          if (t.category === "exercise") {
+            const isCompleted = totalMinutes >= t.targetValue;
+            return { ...t, currentValue: totalMinutes, isCompleted };
+          }
+          return t;
+        });
+        setTasks(updatedTasks);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      };
+
+      const handleDeleteExercise = (id) => {
+        const updated = exercises.filter(e => e.id !== id);
+        saveExercises(updated);
+      };
+
+      const handleAddReminder = (remForm) => {
+        const newRem = {
+          id: Date.now(),
+          isActive: true,
+          ...remForm,
+        };
+        const updated = [...reminders, newRem];
+        setReminders(updated);
+        localStorage.setItem("reminders", JSON.stringify(updated));
+      };
+
+      const handleToggleReminder = (id) => {
+        const updated = reminders.map(r => r.id === id ? { ...r, isActive: !r.isActive } : r);
+        setReminders(updated);
+        localStorage.setItem("reminders", JSON.stringify(updated));
+      };
+
+      const handleDeleteReminder = (id) => {
+        const updated = reminders.filter(r => r.id !== id);
+        setReminders(updated);
+        localStorage.setItem("reminders", JSON.stringify(updated));
+      };
+
+      const handleApplyWeeklyPlan = (weeklyPlan) => {
+        const newMeals = [...meals];
+        const newExercises = [...exercises];
+        const newTasks = [];
+
+        weeklyPlan.days.forEach(day => {
+          // Add meals
+          const dayMeals = [
+            { id: Date.now() + Math.random(), name: day.meals.breakfast.name, calories: day.meals.breakfast.calories, protein: day.meals.breakfast.protein, carbs: day.meals.breakfast.carbs, fat: day.meals.breakfast.fat, isVeg: day.meals.breakfast.isVeg, mealType: "breakfast", dayOfWeek: day.dayOfWeek, notes: "From SmartMeal Plan" },
+            { id: Date.now() + Math.random(), name: day.meals.lunch.name, calories: day.meals.lunch.calories, protein: day.meals.lunch.protein, carbs: day.meals.lunch.carbs, fat: day.meals.lunch.fat, isVeg: day.meals.lunch.isVeg, mealType: "lunch", dayOfWeek: day.dayOfWeek, notes: "From SmartMeal Plan" },
+            { id: Date.now() + Math.random(), name: day.meals.dinner.name, calories: day.meals.dinner.calories, protein: day.meals.dinner.protein, carbs: day.meals.dinner.carbs, fat: day.meals.dinner.fat, isVeg: day.meals.dinner.isVeg, mealType: "dinner", dayOfWeek: day.dayOfWeek, notes: "From SmartMeal Plan" },
+          ];
+          day.meals.snacks.forEach((snack, idx) => {
+            dayMeals.push({ id: Date.now() + Math.random(), name: snack.name, calories: snack.calories, protein: snack.protein, carbs: snack.carbs, fat: snack.fat, isVeg: snack.isVeg, mealType: "snack", dayOfWeek: day.dayOfWeek, notes: "From SmartMeal Plan" });
+          });
+          newMeals.push(...dayMeals);
+
+          // Add exercises
+          day.exercises.forEach(ex => {
+            newExercises.push({
+              id: Date.now() + Math.random(),
+              name: ex.name,
+              category: ex.category,
+              durationMinutes: ex.durationMinutes,
+              caloriesBurned: ex.caloriesBurned,
+              dayOfWeek: day.dayOfWeek,
+              completed: false
+            });
+          });
+
+          // Add daily tasks templates
+          const taskTemplates = [
+            { id: Date.now() + Math.random(), title: "Daily Steps", category: "steps", targetValue: 10000, currentValue: 0, unit: "steps", isCompleted: false, dayOfWeek: day.dayOfWeek },
+            { id: Date.now() + Math.random(), title: "Drink Water", category: "water", targetValue: 8, currentValue: 0, unit: "glasses", isCompleted: false, dayOfWeek: day.dayOfWeek },
+            { id: Date.now() + Math.random(), title: "Exercise", category: "exercise", targetValue: day.exerciseMinutes || 30, currentValue: 0, unit: "min", isCompleted: false, dayOfWeek: day.dayOfWeek },
+            { id: Date.now() + Math.random(), title: "Log Meals", category: "meals", targetValue: 3, currentValue: 0, unit: "meals", isCompleted: false, dayOfWeek: day.dayOfWeek },
+          ];
+          newTasks.push(...taskTemplates);
+        });
+
+        saveMeals(newMeals);
+        saveExercises(newExercises);
+        setTasks(newTasks);
+        localStorage.setItem("tasks", JSON.stringify(newTasks));
+      };
+
+      const dailyCalorieTarget = profile ? calcDailyCalories(profile) : 2000;
+      const today = new Date().getDay();
+      
+      const todayMeals = meals.filter(m => m.dayOfWeek === today);
+      const todayCalories = todayMeals.reduce((sum, m) => sum + m.calories, 0);
+
+      const todayExercises = exercises.filter(e => e.dayOfWeek === today && e.completed);
+      const todayBurned = todayExercises.reduce((sum, e) => sum + e.caloriesBurned, 0);
+
+      const activeTasks = tasks.filter(t => t.dayOfWeek === today);
+      const activeReminders = reminders.filter(r => r.isActive);
+
+      if (!profile) {
+        return (
+          <ProfileSetup
+            dark={dark}
+            existingProfile={profile}
+            onComplete={(p) => {
+              saveProfile(p);
+              // Setup default tasks for today
+              const todayDow = new Date().getDay();
+              const initialTasks = [
+                { id: Date.now() + 1, title: "Daily Steps", category: "steps", targetValue: 10000, currentValue: 0, unit: "steps", isCompleted: false, dayOfWeek: todayDow },
+                { id: Date.now() + 2, title: "Drink Water", category: "water", targetValue: 8, currentValue: 0, unit: "glasses", isCompleted: false, dayOfWeek: todayDow },
+                { id: Date.now() + 3, title: "Exercise", category: "exercise", targetValue: 30, currentValue: 0, unit: "min", isCompleted: false, dayOfWeek: todayDow },
+                { id: Date.now() + 4, title: "Log Meals", category: "meals", targetValue: 3, currentValue: 0, unit: "meals", isCompleted: false, dayOfWeek: todayDow },
+              ];
+              setTasks(initialTasks);
+              localStorage.setItem("tasks", JSON.stringify(initialTasks));
+            }}
+          />
+        );
+      }
+
+      return (
+        <div className={`min-h-screen pb-12 transition-colors duration-500 ${
+          dark ? "bg-[#000000] text-white" : "bg-[#f5f5f5] text-gray-900"
+        }`}>
+          <div className="max-w-[860px] mx-auto px-4 py-6">
+            <div className="fade-in stagger-1">
+              <Header dark={dark} setDark={setDark} activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
+
+            <div className="fade-in stagger-2 mt-4">
+              <ProfileCard
+                profile={profile}
+                dark={dark}
+                onEdit={() => saveProfile(null)}
+                todayCalories={todayCalories}
+                todayBurned={todayBurned}
+                onOpenProfile={() => setActiveTab("profile")}
+              />
+            </div>
+
+            <div className="fade-in stagger-3 mt-4">
+              <WaterTracker dark={dark} water={water} onWaterUpdate={saveWater} />
+            </div>
+            
+            <div className="fade-in stagger-4 mt-6 min-h-[500px]">
+              {activeTab === "profile" && (
+                <ProfileTab
+                  dark={dark}
+                  profile={profile}
+                  onEdit={() => saveProfile(null)}
+                  meals={meals}
+                  exercises={exercises}
+                  water={water}
+                />
+              )}
+              {activeTab === "activity" && (
+                <ActivityTab
+                  dark={dark}
+                  profile={profile}
+                  health={health}
+                  onSyncApp={handleSyncApp}
+                  onDisconnectApp={handleDisconnectApp}
+                  onAddManualSteps={handleAddManualSteps}
+                  tasks={activeTasks}
+                  onUpdateTask={(id, val) => {
+                    const updated = tasks.map(t => t.id === id ? { ...t, currentValue: val, isCompleted: val >= t.targetValue } : t);
+                    setTasks(updated);
+                    localStorage.setItem("tasks", JSON.stringify(updated));
+                  }}
+                  reminders={activeReminders}
+                />
+              )}
+              {activeTab === "myplan" && (
+                <MyPlanTab
+                  dark={dark}
+                  profile={profile}
+                  onApplyPlan={handleApplyWeeklyPlan}
+                />
+              )}
+              {activeTab === "diet" && (
+                <DietTab
+                  dark={dark}
+                  dailyTarget={dailyCalorieTarget}
+                  profile={profile}
+                  meals={meals}
+                  onAddMeal={handleAddMeal}
+                  onDeleteMeal={handleDeleteMeal}
+                />
+              )}
+              {activeTab === "exercise" && (
+                <ExerciseTab
+                  dark={dark}
+                  profile={profile}
+                  exercises={exercises}
+                  onAddExercise={handleAddExercise}
+                  onToggleCompleteExercise={handleToggleCompleteExercise}
+                  onDeleteExercise={handleDeleteExercise}
+                />
+              )}
+              {activeTab === "reminders" && (
+                <RemindersTab
+                  dark={dark}
+                  reminders={reminders}
+                  onAddReminder={handleAddReminder}
+                  onToggleReminder={handleToggleReminder}
+                  onDeleteReminder={handleDeleteReminder}
+                />
+              )}
+              {activeTab === "planner" && (
+                <WeeklyPlannerTab
+                  dark={dark}
+                  dailyTarget={dailyCalorieTarget}
+                  profile={profile}
+                  meals={meals}
+                  exercises={exercises}
+                />
+              )}
+            </div>
+
+            <footer className="text-center mt-16 pb-8 opacity-50 text-sm font-medium hover:opacity-100 transition-opacity">
+              <p>🇮🇳 SmartMeal India — Eat Healthy, Live Happy</p>
+            </footer>
+          </div>
+        </div>
+      );
+    }
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<SmartMealApp />);
+  </script>
+</body>
+</html>
